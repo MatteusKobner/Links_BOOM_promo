@@ -1,0 +1,92 @@
+
+:root{
+  --bg:#080808;
+  --surface:#111;
+  --surface-2:#171717;
+  --text:#fff;
+  --muted:#a5a5a5;
+  --line:rgba(255,255,255,.09);
+  --yellow:#ffd229;
+  --orange:#ff8a00;
+  --red:#ff3727;
+  --shadow:0 22px 60px rgba(0,0,0,.38);
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  margin:0;
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 50% -15%,rgba(255,138,0,.18),transparent 28rem),
+    radial-gradient(circle at -10% 30%,rgba(255,55,39,.09),transparent 22rem),
+    var(--bg);
+  min-height:100vh;
+}
+.page-shell{
+  width:min(720px,calc(100% - 28px));
+  margin:0 auto;
+  padding:34px 0 70px;
+}
+.hero{text-align:center;padding:4px 0 26px}
+.brand-logo{
+  width:112px;height:112px;object-fit:contain;
+  filter:drop-shadow(0 16px 30px rgba(255,138,0,.18));
+}
+h1{font-size:clamp(34px,8vw,50px);letter-spacing:-1.8px;margin:10px 0 8px;line-height:1}
+.hero p{max-width:480px;margin:0 auto;color:var(--muted);font-size:15px;line-height:1.55}
+.socials{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:17px}
+.social-pill{
+  border:1px solid var(--line);background:rgba(255,255,255,.035);
+  padding:7px 10px;border-radius:999px;font-size:11px;font-weight:800;color:#ddd
+}
+.section-heading{
+  display:flex;align-items:end;justify-content:space-between;
+  margin:18px 2px 12px;
+}
+.kicker{font-size:11px;text-transform:uppercase;letter-spacing:1.1px;color:var(--yellow);font-weight:900}
+h2{margin:3px 0 0;font-size:24px;letter-spacing:-.5px}
+.count{color:#777;font-size:12px}
+.product-list{display:grid;gap:14px}
+.card{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,var(--surface-2),var(--surface));
+  border:1px solid var(--line);border-radius:24px;padding:22px;
+  box-shadow:var(--shadow)
+}
+.card:before{
+  content:"";position:absolute;left:0;top:0;width:100%;height:4px;
+  background:linear-gradient(90deg,var(--red),var(--orange),var(--yellow))
+}
+.badge{
+  display:inline-flex;padding:6px 9px;border-radius:999px;
+  color:var(--yellow);font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.7px;
+  background:rgba(255,210,41,.09);border:1px solid rgba(255,210,41,.18)
+}
+.product-name{font-size:23px;line-height:1.12;letter-spacing:-.55px;margin:14px 0 7px}
+.desc{font-size:14px;color:var(--muted);line-height:1.55;margin:0}
+.features{display:flex;gap:7px;flex-wrap:wrap;margin:17px 0}
+.feature{border:1px solid var(--line);background:#0b0b0b;padding:7px 9px;border-radius:9px;font-size:11px;font-weight:800;color:#e7e7e7}
+.price-row{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-top:4px}
+.store{font-size:11px;color:#858585;margin-bottom:3px}
+.price{font-size:32px;font-weight:950;letter-spacing:-1px;color:var(--yellow);line-height:1}
+.cta{
+  display:flex;justify-content:center;align-items:center;width:100%;min-height:54px;margin-top:18px;
+  border-radius:15px;text-decoration:none;color:#121212;font-weight:950;font-size:15px;
+  background:linear-gradient(90deg,var(--yellow),#ffad0a);
+  box-shadow:0 12px 30px rgba(255,173,10,.18);
+  transition:.15s ease
+}
+.cta:hover{transform:translateY(-1px);filter:brightness(1.03)}
+.empty{
+  text-align:center;border:1px dashed var(--line);border-radius:18px;color:var(--muted);padding:30px
+}
+footer{text-align:center;color:#696969;font-size:11px;line-height:1.5;margin-top:26px}
+footer strong{color:#969696}
+footer p{margin:4px 0}
+@media(max-width:460px){
+  .page-shell{width:min(100% - 20px,720px);padding-top:22px}
+  .brand-logo{width:94px;height:94px}
+  .card{padding:19px;border-radius:20px}
+  .product-name{font-size:21px}
+}
