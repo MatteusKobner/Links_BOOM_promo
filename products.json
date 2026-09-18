@@ -1,0 +1,18 @@
+[
+  {
+    "id": "mini-soprador-130k",
+    "name": "Mini Soprador Turbo 130.000 RPM",
+    "description": "Compacto, sem fio e recarregável. Para teclado, setup, carro e cantos difíceis.",
+    "price": "R$ 51,90",
+    "store": "Mercado Livre",
+    "url": "https://meli.la/2966qon",
+    "badge": "Achadinho do momento",
+    "features": [
+      "130.000 RPM",
+      "Recarregável",
+      "3 níveis",
+      "Jato forte"
+    ],
+    "active": true
+  }
+]
