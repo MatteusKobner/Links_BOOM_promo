@@ -14,5 +14,21 @@
       "Jato forte"
     ],
     "active": true
+  },
+  {
+    "id": "frigideira-24cm-antiaderente",
+    "name": "Frigideira Antiaderente 24 cm + Espátula",
+    "description": "Frigideira de 24 cm com revestimento antiaderente e espátula de nylon inclusa. Mais praticidade para o dia a dia.",
+    "price": "R$ 52,90",
+    "store": "Mercado Livre",
+    "url": "https://meli.la/1bwg6dp",
+    "badge": "Espátula de brinde",
+    "features": [
+      "24 cm",
+      "Antiaderente",
+      "Espátula inclusa",
+      "Fácil de limpar"
+    ],
+    "active": true
   }
 ]
