@@ -30,10 +30,11 @@ h2{margin:7px 0 6px;font-size:clamp(30px,4vw,40px);letter-spacing:-1.4px;line-he
 .card{min-width:0;display:flex;flex-direction:column;overflow:hidden;background:var(--surface);border:1px solid #3d3b40;border-radius:22px;box-shadow:0 12px 32px rgba(0,0,0,.18);transition:transform .3s cubic-bezier(.2,.75,.2,1),background .3s ease,border-color .3s ease,box-shadow .3s ease;transform-origin:center center}
 @keyframes card-arrive{from{opacity:.55;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 .card.card-entering{animation:card-arrive .65s cubic-bezier(.2,.75,.2,1) backwards}
-@media(hover:hover) and (pointer:fine){.card:hover{transform:translateY(-8px) scale(1.035);background:#302d28;border-color:#c4a254;box-shadow:0 22px 44px rgba(0,0,0,.34),0 0 34px rgba(255,210,41,.12)}}
+@media(hover:hover) and (pointer:fine){.card:hover{transform:translateY(-8px) scale(1.035);background:#34302a;border-color:#c4a254;box-shadow:0 22px 44px rgba(0,0,0,.34),0 0 34px rgba(255,210,41,.12)}.card:hover .product-media::after{opacity:1}}
 @media(hover:none){.card:active{transform:scale(.985);background:#302d28;border-color:#a78a45}}
 .card:focus-within{border-color:#a78a45}
 .product-media{position:relative;aspect-ratio:1/1;background:#1b1b1e;border-bottom:1px solid var(--line);overflow:hidden;display:grid;place-items:center}
+.product-media::after{content:"";position:absolute;inset:0;background:rgba(255,210,41,.07);opacity:0;pointer-events:none;transition:opacity .3s ease}
 .product-image{display:block;width:100%;height:100%;object-fit:contain;min-height:0}
 .media-placeholder{height:100%;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#8d8c94;background:radial-gradient(circle,rgba(255,138,0,.04),transparent 65%),#101012;text-align:center}
 .media-placeholder svg{width:44px;height:44px;stroke:#77757e}
