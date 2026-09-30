@@ -1,5 +1,9 @@
-// Preencha apenas com URLs reais dos perfis. Vazio = botão indisponível.
-const socialLinks = { youtube: '', instagram: '', tiktok: '' };
+// URLs oficiais da BOOM Promo. Vazio = botão indisponível.
+const socialLinks = {
+  youtube: 'https://www.youtube.com/@BOOMpromo01',
+  instagram: 'https://www.instagram.com/boom_promo01/',
+  tiktok: 'https://www.tiktok.com/@boom_promo_01'
+};
 const socialIcons = {
   youtube: '<path fill="currentColor" d="M21.6 7.2a3 3 0 0 0-2.1-2.1C17.7 4.6 12 4.6 12 4.6s-5.7 0-7.5.5a3 3 0 0 0-2.1 2.1C2 9 2 12 2 12s0 3 .4 4.8a3 3 0 0 0 2.1 2.1c1.8.5 7.5.5 7.5.5s5.7 0 7.5-.5a3 3 0 0 0 2.1-2.1C22 15 22 12 22 12s0-3-.4-4.8ZM10 15.5v-7l6 3.5-6 3.5Z"/>',
   instagram: '<g fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></g><circle fill="currentColor" cx="17.5" cy="6.5" r="1"/>',

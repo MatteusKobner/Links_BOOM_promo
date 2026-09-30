@@ -24,11 +24,11 @@ Copie um objeto no array de `products.json` e ajuste os campos:
 
 Coloque as fotos corretas em `assets/`. Prefira WebP otimizado. O layout mantém a imagem inteira, sem recortá-la. Deixe `image` e `alt` vazios quando não houver uma foto correta: o card exibe “Foto em breve”. Imagens que falharem também recebem esse tratamento. Até quatro características aparecem no card. `active: false` oculta o produto.
 
-A foto atual do Davely é uma versão otimizada da imagem existente “Mini Soprador Davely em Destaque.png”, sem recriar ou modificar o produto. A logo original está preservada em `assets/logo.png`.
+A foto atual do Davely é uma versão otimizada da imagem existente “Mini Soprador Davely em Destaque.png”, sem recriar ou modificar o produto. A logo sem fundo enviada está em `assets/logo.png`, otimizada e com transparência preservada.
 
 ## Redes sociais
 
-No início de `app.js`, preencha `socialLinks` apenas com URLs reais dos perfis. Enquanto os valores estiverem vazios, os botões ficam indisponíveis, sem links fictícios.
+No início de `app.js`, preencha `socialLinks` apenas com URLs reais dos perfis. Os três perfis oficiais já estão configurados. Valores vazios deixam os botões indisponíveis, sem links fictícios.
 
 ## Testar localmente
 
