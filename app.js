@@ -36,8 +36,10 @@ async function loadProducts() {
     if (!Array.isArray(data)) throw new Error('Formato inválido de produtos');
     const products = data.filter(product => product && product.active !== false);
     let cardObserver;
+    let focusObserver;
     function showProducts() {
       cardObserver?.disconnect();
+      focusObserver?.disconnect();
       const query = normalizeSearch(searchInput.value.trim());
       const visible = query ? products.filter(product => normalizeSearch([
         product.name, product.description, product.badge, product.store,
@@ -83,6 +85,12 @@ async function loadProducts() {
         }, { threshold: 0.12 });
         cardObserver = observer;
         container.querySelectorAll('.card').forEach(card => observer.observe(card));
+      }
+      if ('IntersectionObserver' in window) {
+        focusObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => entry.target.classList.toggle('is-featured', entry.isIntersecting));
+        }, { rootMargin: '-30% 0px -30% 0px' });
+        container.querySelectorAll('.card').forEach(card => focusObserver.observe(card));
       }
       container.querySelectorAll('.product-image').forEach(img => {
         img.addEventListener('error', () => { img.parentElement.innerHTML = imagePlaceholder(); }, { once: true });
