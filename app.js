@@ -28,21 +28,30 @@ function imagePlaceholder() {
 async function loadProducts() {
   const container = document.querySelector('#products');
   const counter = document.querySelector('#product-count');
+  const searchInput = document.querySelector('#product-search');
   try {
     const response = await fetch('/products.json', { cache: 'no-store' });
     if (!response.ok) throw new Error(`Falha ao carregar produtos: ${response.status}`);
     const data = await response.json();
     if (!Array.isArray(data)) throw new Error('Formato inválido de produtos');
     const products = data.filter(product => product && product.active !== false);
-    counter.textContent = `${products.length} ${products.length === 1 ? 'produto' : 'produtos'}`;
-    if (!products.length) {
-      container.innerHTML = '<div class="empty">Nenhum produto disponível no momento.</div>';
-      return;
-    }
-    container.innerHTML = products.map(product => {
-      const image = safeUrl(product.image, true);
-      const url = safeUrl(product.url);
-      return `
+    let cardObserver;
+    function showProducts() {
+      cardObserver?.disconnect();
+      const query = normalizeSearch(searchInput.value.trim());
+      const visible = query ? products.filter(product => normalizeSearch([
+        product.name, product.description, product.badge, product.store,
+        ...(Array.isArray(product.features) ? product.features : [])
+      ].join(' ')).includes(query)) : products;
+      counter.textContent = `${visible.length} ${visible.length === 1 ? 'produto' : 'produtos'}`;
+      if (!visible.length) {
+        container.innerHTML = `<div class="empty">${query ? 'Nenhum produto encontrado. Tente outra busca.' : 'Nenhum produto disponível no momento.'}</div>`;
+        return;
+      }
+      container.innerHTML = visible.map(product => {
+        const image = safeUrl(product.image, true);
+        const url = safeUrl(product.url);
+        return `
       <article class="card">
         <div class="product-media">
           ${image ? `<img class="product-image" src="${escapeAttribute(image)}" alt="${escapeAttribute(product.alt || product.name)}" loading="lazy" decoding="async" width="800" height="1400">` : imagePlaceholder()}
@@ -61,22 +70,27 @@ async function loadProducts() {
           </div>
         </div>
       </article>`;
-    }).join('');
-    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          const card = entry.target;
-          card.classList.add('card-entering');
-          card.addEventListener('animationend', () => card.classList.remove('card-entering'), { once: true });
-          observer.unobserve(card);
-        });
-      }, { threshold: 0.12 });
-      container.querySelectorAll('.card').forEach(card => observer.observe(card));
+      }).join('');
+      if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const card = entry.target;
+            card.classList.add('card-entering');
+            card.addEventListener('animationend', () => card.classList.remove('card-entering'), { once: true });
+            observer.unobserve(card);
+          });
+        }, { threshold: 0.12 });
+        cardObserver = observer;
+        container.querySelectorAll('.card').forEach(card => observer.observe(card));
+      }
+      container.querySelectorAll('.product-image').forEach(img => {
+        img.addEventListener('error', () => { img.parentElement.innerHTML = imagePlaceholder(); }, { once: true });
+      });
     }
-    container.querySelectorAll('.product-image').forEach(img => {
-      img.addEventListener('error', () => { img.parentElement.innerHTML = imagePlaceholder(); }, { once: true });
-    });
+    searchInput.disabled = false;
+    searchInput.addEventListener('input', showProducts);
+    showProducts();
   } catch (error) {
     console.error(error);
     counter.textContent = '';
@@ -84,6 +98,10 @@ async function loadProducts() {
   } finally {
     container.setAttribute('aria-busy', 'false');
   }
+}
+
+function normalizeSearch(value) {
+  return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
 }
 
 // Preserve a sanitização mesmo quando os valores vierem do JSON.

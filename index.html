@@ -32,7 +32,15 @@
         <h2 id="products-title">Achados que valem o clique<span class="accent">.</span></h2>
         <p>Praticidade e boas descobertas para o seu dia.</p>
       </div>
-      <span id="product-count" class="count"></span>
+      <span id="product-count" class="count" aria-live="polite"></span>
+    </div>
+
+    <div class="product-search" role="search">
+      <label for="product-search">Buscar produto</label>
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg>
+        <input id="product-search" type="search" placeholder="Busque pelo produto ou característica" aria-controls="products" autocomplete="off" disabled />
+      </div>
     </div>
 
     <section id="products" class="product-list" aria-labelledby="products-title" aria-live="polite" aria-busy="true">
@@ -41,9 +49,15 @@
     <noscript><p class="empty">Ative o JavaScript para visualizar os produtos e as ofertas.</p></noscript>
 
     <footer>
-      <strong>Boom Promo</strong>
-      <p>Os preços podem mudar a qualquer momento na loja parceira.</p>
-      <p>Alguns links podem ser de afiliado. Você não paga nada a mais por isso.</p>
+      <div class="footer-brand">
+        <strong>BOOM! PROMO</strong>
+        <p>Site para divulgação dos produtos apresentados nos perfis da BOOM! PROMO.</p>
+      </div>
+      <div class="footer-info">
+        <p>Os preços podem mudar a qualquer momento na loja parceira.</p>
+        <p>Alguns links podem ser de afiliado. Você não paga nada a mais por isso.</p>
+        <p><strong>Privacidade e LGPD:</strong> a busca acontece no seu navegador; o texto pesquisado não é enviado ao nosso servidor. Ao abrir links externos, consulte a política de privacidade do site de destino.</p>
+      </div>
     </footer>
   </main>
 
