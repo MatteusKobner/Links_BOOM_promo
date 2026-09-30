@@ -62,6 +62,18 @@ async function loadProducts() {
         </div>
       </article>`;
     }).join('');
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const card = entry.target;
+          card.classList.add('card-entering');
+          card.addEventListener('animationend', () => card.classList.remove('card-entering'), { once: true });
+          observer.unobserve(card);
+        });
+      }, { threshold: 0.12 });
+      container.querySelectorAll('.card').forEach(card => observer.observe(card));
+    }
     container.querySelectorAll('.product-image').forEach(img => {
       img.addEventListener('error', () => { img.parentElement.innerHTML = imagePlaceholder(); }, { once: true });
     });

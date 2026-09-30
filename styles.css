@@ -27,8 +27,11 @@ h2{margin:7px 0 6px;font-size:clamp(30px,4vw,40px);letter-spacing:-1.4px;line-he
 .section-heading p{margin:0;color:var(--muted);font-size:14px}
 .count{color:#b9b8bd;font-size:12px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;white-space:nowrap}
 .product-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
-.card{min-width:0;display:flex;flex-direction:column;overflow:hidden;background:var(--surface);border:1px solid #3d3b40;border-radius:22px;box-shadow:0 12px 32px rgba(0,0,0,.18);transition:transform .22s ease,background .22s ease,border-color .22s ease,box-shadow .22s ease}
-@media(hover:hover) and (pointer:fine){.card:hover{transform:translateY(-4px) scale(1.018);background:#2b2926;border-color:#a78a45;box-shadow:0 18px 40px rgba(0,0,0,.28),0 0 28px rgba(255,210,41,.08)}}
+.card{min-width:0;display:flex;flex-direction:column;overflow:hidden;background:var(--surface);border:1px solid #3d3b40;border-radius:22px;box-shadow:0 12px 32px rgba(0,0,0,.18);transition:transform .3s cubic-bezier(.2,.75,.2,1),background .3s ease,border-color .3s ease,box-shadow .3s ease;transform-origin:center center}
+@keyframes card-arrive{from{opacity:.55;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.card.card-entering{animation:card-arrive .65s cubic-bezier(.2,.75,.2,1) backwards}
+@media(hover:hover) and (pointer:fine){.card:hover{transform:translateY(-8px) scale(1.035);background:#302d28;border-color:#c4a254;box-shadow:0 22px 44px rgba(0,0,0,.34),0 0 34px rgba(255,210,41,.12)}}
+@media(hover:none){.card:active{transform:scale(.985);background:#302d28;border-color:#a78a45}}
 .card:focus-within{border-color:#a78a45}
 .product-media{position:relative;aspect-ratio:1/1;background:#1b1b1e;border-bottom:1px solid var(--line);overflow:hidden;display:grid;place-items:center}
 .product-image{display:block;width:100%;height:100%;object-fit:contain;min-height:0}
@@ -59,4 +62,4 @@ footer strong{color:#c6c4cc;font-size:13px;white-space:nowrap}
 footer p{margin:0}
 @media(max-width:800px){.hero{align-items:flex-start;flex-direction:column;gap:20px}.social-area{width:100%}.social-label{display:none}.social-button{flex:1}.socials{flex-wrap:nowrap}.page-shell{width:calc(100% - 40px)}.card-content{padding:22px}.product-name{font-size:21px}}
 @media(max-width:620px){.page-shell{width:calc(100% - 32px);padding-top:20px}.hero{padding-bottom:22px;gap:18px}.brand{gap:14px}.brand-logo{width:70px;height:70px}h1{font-size:26px}.brand p{font-size:12px;margin-top:6px}.social-button{padding:10px 8px;font-size:11px;gap:6px}.section-heading{margin:26px 0 18px;align-items:flex-start}.section-heading>div{min-width:0}.count{margin-top:24px}h2{font-size:31px}.section-heading p{font-size:13px}.count{font-size:11px;padding:7px 10px}.product-list{grid-template-columns:minmax(0,1fr);gap:24px}.product-media{aspect-ratio:4/5}.card-content{padding:22px}.product-name{font-size:23px}.price{font-size:34px}footer{display:block;text-align:center;margin-top:28px}footer strong{display:block;margin-bottom:10px}footer p+p{margin-top:5px}}
-@media(prefers-reduced-motion:reduce){.card:hover{transform:none}html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+@media(prefers-reduced-motion:reduce){.card:hover,.card:active{transform:none}.card.card-entering{animation:none}html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
