@@ -12,28 +12,33 @@
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <a class="skip-link" href="#products">Ir para os produtos</a>
   <main class="page-shell">
     <header class="hero">
-      <img class="brand-logo" src="/assets/logo.png" alt="Boom Promo" />
-      <h1>Boom Promo</h1>
-      <p>Achadinhos úteis, ofertas e produtos que chamaram nossa atenção.</p>
-
-      <nav class="socials" aria-label="Redes sociais">
-        <span class="social-pill">YouTube</span>
-        <span class="social-pill">Instagram</span>
-        <span class="social-pill">TikTok</span>
-      </nav>
+      <div class="brand">
+        <img class="brand-logo" src="/assets/logo.png" alt="Logo BOOM Promo" width="88" height="88" />
+        <div><h1>BOOM <span>PROMO</span></h1>
+        <p>Achadinhos que facilitam a vida.</p></div>
+      </div>
+      <div class="social-area">
+        <p class="social-label">BOOM nas redes</p>
+        <nav id="socials" class="socials" aria-label="Redes sociais"></nav>
+      </div>
     </header>
 
-    <section class="section-heading">
+    <div class="section-heading">
       <div>
-        <span class="kicker">🔥 Em destaque</span>
-        <h2>Produtos</h2>
+        <span class="kicker">A seleção da BOOM</span>
+        <h2 id="products-title">Em destaque<span class="accent">.</span></h2>
+        <p>Viu nos vídeos? Encontre aqui.</p>
       </div>
       <span id="product-count" class="count"></span>
-    </section>
+    </div>
 
-    <section id="products" class="product-list" aria-live="polite"></section>
+    <section id="products" class="product-list" aria-labelledby="products-title" aria-live="polite" aria-busy="true">
+      <p class="empty">Carregando os achadinhos…</p>
+    </section>
+    <noscript><p class="empty">Ative o JavaScript para visualizar os produtos e as ofertas.</p></noscript>
 
     <footer>
       <strong>Boom Promo</strong>

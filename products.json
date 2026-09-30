@@ -13,7 +13,9 @@
       "3 níveis",
       "Jato forte"
     ],
-    "active": true
+    "active": true,
+    "image": "/assets/mini-soprador-davely.webp",
+    "alt": "Mini Soprador Davely preto em destaque na arte original da BOOM Promo"
   },
   {
     "id": "frigideira-24cm-antiaderente",
@@ -29,6 +31,8 @@
       "Espátula inclusa",
       "Fácil de limpar"
     ],
-    "active": true
+    "active": true,
+    "image": "",
+    "alt": ""
   }
 ]
