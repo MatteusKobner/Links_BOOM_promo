@@ -34,5 +34,23 @@
     "active": true,
     "image": "/assets/frigideira-24cm.webp",
     "alt": "Frigideira antiaderente de 24 cm com cabo amadeirado e espátula preta de nylon inclusa"
+  },
+  {
+    "id": "torneira-flexivel-preta",
+    "name": "Torneira Flexível Preta",
+    "description": "Torneira de parede com haste flexível e jato potente para facilitar a rotina da cozinha.",
+    "price": "Consulte no Mercado Livre",
+    "store": "Mercado Livre",
+    "url": "https://meli.la/1py1jdG",
+    "badge": "Nova recomendação",
+    "features": [
+      "Haste flexível",
+      "Jato potente",
+      "Acabamento preto",
+      "Para cozinha"
+    ],
+    "active": true,
+    "image": "/assets/torneira-flexivel-preta.png",
+    "alt": "Torneira preta flexível instalada na parede com jato de água forte"
   }
 ]
