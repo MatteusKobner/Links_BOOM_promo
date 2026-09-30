@@ -16,7 +16,7 @@ function renderSocials() {
     const content = `<svg viewBox="0 0 24 24" aria-hidden="true">${socialIcons[key]}</svg>${label}`;
     const url = safeUrl(socialLinks[key]);
     return url
-      ? `<a class="social-button" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer" aria-label="BOOM Promo no ${label} (abre em nova aba)">${content}</a>`
+      ? `<a class="social-button" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer" aria-label="BOOM! PROMO no ${label} (abre em nova aba)">${content}</a>`
       : `<button class="social-button" type="button" disabled aria-label="${label}: perfil ainda não disponível" title="Perfil ainda não disponível">${content}</button>`;
   }).join('');
 }
@@ -57,7 +57,7 @@ async function loadProducts() {
               <div class="store">${escapeHtml(product.store || 'Loja parceira')}</div>
               <div class="price">${escapeHtml(product.price || 'Ver oferta')}</div>
             </div>
-            ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" aria-label="${escapeAttribute(`Ver oferta de ${product.name} no ${product.store || 'site da loja'} (abre em nova aba)`)}">Ver oferta no ${escapeHtml(product.store || 'site da loja')} <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
+            ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" aria-label="${escapeAttribute(`Compre ${product.name} diretamente pelo ${product.store || 'site da loja'} (abre em nova aba)`)}">Compre diretamente pelo ${escapeHtml(product.store || 'site da loja')} <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
           </div>
         </div>
       </article>`;
