@@ -30,7 +30,7 @@ h2{margin:7px 0 6px;font-size:clamp(30px,4vw,40px);letter-spacing:-1.4px;line-he
 .product-search label{display:block;margin-bottom:9px;color:#d3d1d5;font-size:12px;font-weight:700}
 .search-field{position:relative}
 .search-field svg{position:absolute;top:50%;left:16px;width:20px;height:20px;transform:translateY(-50%);color:#d1c9bb;pointer-events:none}
-.search-field input{width:100%;min-height:52px;padding:12px 18px 12px 48px;border:1px solid #827252;border-radius:12px;background:#302f2c;color:var(--text);font:inherit;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s}
+.search-field input{width:100%;min-height:52px;padding:12px 18px 12px 48px;border:1px solid #827252;border-radius:12px;background:#302f2c;color:var(--text);font:inherit;font-size:16px;outline:none;transition:border-color .2s,box-shadow .2s}
 .search-field input::placeholder{color:#c8c0b2}
 .search-field input:focus-visible{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(255,210,41,.15)}
 .search-field input:disabled{opacity:.6}
@@ -61,10 +61,10 @@ h2{margin:7px 0 6px;font-size:clamp(30px,4vw,40px);letter-spacing:-1.4px;line-he
 .feature{font-size:12px;color:#e3ddd2;display:flex;align-items:baseline;gap:7px;overflow-wrap:anywhere}
 .feature::before{content:"✓";color:var(--yellow);font-size:12px}
 .purchase{margin-top:auto;padding-top:20px;border-top:1px solid var(--line)}
-.price-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.price-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
 .store{display:flex;align-items:center;gap:7px;font-size:12px;color:#ddd5c7}
 .store::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--yellow)}
-.price{font-size:34px;font-weight:850;letter-spacing:-1.3px;color:#ffe4a0;line-height:1.1;white-space:nowrap}
+.price{max-width:100%;overflow-wrap:anywhere;white-space:normal;font-size:34px;font-weight:850;letter-spacing:-1.3px;color:#ffe4a0;line-height:1.1;}
 .cta{display:flex;justify-content:center;align-items:center;gap:10px;width:100%;min-height:54px;margin-top:20px;padding:14px 10px;border-radius:12px;text-decoration:none;color:#211903;font-weight:800;font-size:14px;text-align:center;line-height:1.4;background:var(--yellow);transition:background .15s,transform .15s}
 .cta span{font-size:20px;line-height:1;flex-shrink:0}
 .cta:hover{background:#f8da85;transform:translateY(-1px)}
@@ -81,3 +81,11 @@ footer p{margin:0}
 @media(max-width:800px){.hero{align-items:flex-start;flex-direction:column;gap:20px}.social-area{width:100%}.social-label{display:none}.social-button{flex:1}.socials{flex-wrap:nowrap}.page-shell{width:calc(100% - 40px)}.card-content{padding:22px}.product-name{font-size:21px}}
 @media(max-width:620px){.page-shell{width:calc(100% - 32px);padding-top:20px}.hero{padding-bottom:22px;gap:18px}.brand{gap:14px}.brand-logo{width:70px;height:70px}h1{font-size:26px}.brand p{font-size:12px;margin-top:6px}.social-button{padding:10px 8px;font-size:11px;gap:6px}.section-heading{margin:26px 0 18px;align-items:flex-start}.section-heading>div{min-width:0}.count{margin-top:24px}h2{font-size:31px}.section-heading p{font-size:13px}.count{font-size:11px;padding:7px 10px}.product-search{margin-bottom:20px}.product-list{grid-template-columns:minmax(0,1fr);gap:24px}.product-media{aspect-ratio:4/5}.card-content{padding:22px}.product-name{font-size:23px}.price{font-size:34px}footer{grid-template-columns:1fr;gap:8px;margin-top:22px;padding-top:14px;line-height:1.4}.footer-info{gap:4px}}
 @media(prefers-reduced-motion:reduce){.card:hover,.card:active,.card.is-featured{transform:none}.card.card-entering{animation:none}html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+
+/* Mensagens de preço devem caber também em cards estreitos. */
+.price-note{flex:1 1 100%;font-size:18px;letter-spacing:0;line-height:1.4}
+.brand>div{min-width:0}
+.product-name,.desc,.badge,.cta{overflow-wrap:anywhere}
+.store::before,.badge::before{flex-shrink:0}
+.count:empty{display:none}
+@media(max-width:380px){.section-heading{flex-wrap:wrap}.count{margin-top:0}.socials{flex-wrap:wrap}.social-button{flex:1 1 80px}}

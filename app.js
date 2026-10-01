@@ -34,7 +34,8 @@ async function loadProducts() {
     if (!response.ok) throw new Error(`Falha ao carregar produtos: ${response.status}`);
     const data = await response.json();
     if (!Array.isArray(data)) throw new Error('Formato inválido de produtos');
-    const products = data.filter(product => product && product.active !== false);
+    const products = data.filter(product => product && typeof product === 'object' &&
+      !Array.isArray(product) && typeof product.name === 'string' && product.name.trim() && product.active !== false);
     let cardObserver;
     let focusObserver;
     function showProducts() {
@@ -66,7 +67,7 @@ async function loadProducts() {
           <div class="purchase">
             <div class="price-row">
               <div class="store">${escapeHtml(product.store || 'Loja parceira')}</div>
-              <div class="price">${escapeHtml(product.price || 'Ver oferta')}</div>
+              <div class="price${/^R\$\s*[\d.,]+$/.test(product.price || '') ? '' : ' price-note'}">${escapeHtml(product.price || 'Ver oferta')}</div>
             </div>
             ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" aria-label="${escapeAttribute(`Compre ${product.name} diretamente pelo ${product.store || 'site da loja'} (abre em nova aba)`)}">Compre diretamente pelo ${escapeHtml(product.store || 'site da loja')} <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
           </div>
@@ -93,7 +94,11 @@ async function loadProducts() {
         container.querySelectorAll('.card').forEach(card => focusObserver.observe(card));
       }
       container.querySelectorAll('.product-image').forEach(img => {
-        img.addEventListener('error', () => { img.parentElement.innerHTML = imagePlaceholder(); }, { once: true });
+        const showPlaceholder = () => {
+          if (img.parentElement) img.parentElement.innerHTML = imagePlaceholder();
+        };
+        img.addEventListener('error', showPlaceholder, { once: true });
+        if (img.complete && img.naturalWidth === 0) showPlaceholder();
       });
     }
     searchInput.disabled = false;
@@ -122,9 +127,11 @@ function escapeAttribute(value = '') { return escapeHtml(value); }
 function safeUrl(value, allowLocal = false) {
   if (typeof value !== 'string' || !value.trim()) return '';
   try {
+    value = value.trim();
     const url = new URL(value, window.location.origin);
-    if (allowLocal && url.origin === window.location.origin && /^\/(?!\/)/.test(value)) return url.pathname;
-    return url.protocol === 'https:' ? url.href : '';
+    if (url.username || url.password) return '';
+    if (allowLocal && url.origin === window.location.origin && /^\/(?!\/)/.test(value)) return url.pathname + url.search;
+    return /^https:\/\//i.test(value) && url.protocol === 'https:' ? url.href : '';
   } catch { return ''; }
 }
 renderSocials();
