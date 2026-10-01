@@ -69,7 +69,7 @@ async function loadProducts() {
               <div class="store">${escapeHtml(product.store || 'Loja parceira')}</div>
               <div class="price${/^R\$\s*[\d.,]+$/.test(product.price || '') ? '' : ' price-note'}">${escapeHtml(product.price || 'Ver oferta')}</div>
             </div>
-            ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" aria-label="${escapeAttribute(`Compre ${product.name} diretamente pelo ${product.store || 'site da loja'} (abre em nova aba)`)}">Compre diretamente pelo ${escapeHtml(product.store || 'site da loja')} <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
+            ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" data-product-id="${escapeAttribute(product.id || product.name)}" data-product-name="${escapeAttribute(product.name)}" aria-label="${escapeAttribute(`Compre ${product.name} diretamente pelo ${product.store || 'site da loja'} (abre em nova aba)`)}">Compre diretamente pelo ${escapeHtml(product.store || 'site da loja')} <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
           </div>
         </div>
       </article>`;

@@ -82,6 +82,9 @@ footer p{margin:0}
 @media(max-width:620px){.page-shell{width:calc(100% - 32px);padding-top:20px}.hero{padding-bottom:22px;gap:18px}.brand{gap:14px}.brand-logo{width:70px;height:70px}h1{font-size:26px}.brand p{font-size:12px;margin-top:6px}.social-button{padding:10px 8px;font-size:11px;gap:6px}.section-heading{margin:26px 0 18px;align-items:flex-start}.section-heading>div{min-width:0}.count{margin-top:24px}h2{font-size:31px}.section-heading p{font-size:13px}.count{font-size:11px;padding:7px 10px}.product-search{margin-bottom:20px}.product-list{grid-template-columns:minmax(0,1fr);gap:24px}.product-media{aspect-ratio:4/5}.card-content{padding:22px}.product-name{font-size:23px}.price{font-size:34px}footer{grid-template-columns:1fr;gap:8px;margin-top:22px;padding-top:14px;line-height:1.4}.footer-info{gap:4px}}
 @media(prefers-reduced-motion:reduce){.card:hover,.card:active,.card.is-featured{transform:none}.card.card-entering{animation:none}html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
 
+.analytics-consent{position:fixed;z-index:20;right:16px;bottom:16px;width:min(100% - 32px,430px);padding:18px;background:#292722;border:1px solid #8c7850;border-radius:16px;box-shadow:0 16px 44px rgba(0,0,0,.52)}
+.analytics-consent p{margin:0;color:#ede5d8;font-size:13px;line-height:1.5}.analytics-consent strong{color:#fff8e9}.analytics-consent-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:15px}.analytics-consent button{min-height:42px;padding:9px 12px;border-radius:9px;border:1px solid #9b8c6c;background:transparent;color:#fffdf5;font:inherit;font-size:13px;font-weight:700;cursor:pointer}.analytics-consent .analytics-accept{border-color:var(--yellow);background:var(--yellow);color:#211903}
+
 /* Mensagens de preço devem caber também em cards estreitos. */
 .price-note{flex:1 1 100%;font-size:18px;letter-spacing:0;line-height:1.4}
 .brand>div{min-width:0}
