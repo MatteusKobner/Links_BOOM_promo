@@ -1,0 +1,36 @@
+name: Atualizar preços BOOM Promo
+
+on:
+  schedule:
+    - cron: '30 6,18 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar site
+        uses: actions/checkout@v4
+
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Consultar preços atuais
+        run: node scripts/update-prices.mjs
+
+      - name: Publicar mudanças de preço
+        run: |
+          if git diff --quiet -- products.json; then
+            echo "Nenhum preço mudou."
+            exit 0
+          fi
+          git config user.name "BOOM Promo Price Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add products.json
+          git commit -m "Atualiza preços dos produtos"
+          git push
