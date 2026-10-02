@@ -54,6 +54,8 @@ async function loadProducts() {
       container.innerHTML = visible.map(product => {
         const image = safeUrl(product.image, true);
         const url = safeUrl(product.url);
+        const isCurrencyPrice = /^R\$\s*[\d.,]+$/.test(product.price || '');
+        const hasOriginalPrice = isCurrencyPrice && /^R\$\s*[\d.,]+$/.test(product.originalPrice || '') && product.originalPrice !== product.price;
         return `
       <article class="card">
         <div class="product-media">
@@ -67,7 +69,10 @@ async function loadProducts() {
           <div class="purchase">
             <div class="price-row">
               <div class="store">${escapeHtml(product.store || 'Loja parceira')}</div>
-              <div class="price${/^R\$\s*[\d.,]+$/.test(product.price || '') ? '' : ' price-note'}">${escapeHtml(product.price || 'Ver oferta')}</div>
+              <div class="price-details">
+                ${hasOriginalPrice ? `<del class="original-price">${escapeHtml(product.originalPrice)}</del>` : ''}
+                <div class="price${isCurrencyPrice ? '' : ' price-note'}">${escapeHtml(product.price || 'Ver oferta')}</div>
+              </div>
             </div>
             ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" data-product-id="${escapeAttribute(product.id || product.name)}" data-product-name="${escapeAttribute(product.name)}" aria-label="${escapeAttribute(`Compre ${product.name} diretamente pelo ${product.store || 'site da loja'} (abre em nova aba)`)}">Compre diretamente pelo ${escapeHtml(product.store || 'site da loja')} <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
           </div>

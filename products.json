@@ -1,6 +1,7 @@
 [
   {
     "id": "mini-soprador-130k",
+    "marketplaceItemId": "MLB6781687878",
     "name": "Mini Soprador Turbo 130.000 RPM",
     "description": "Compacto, sem fio e recarregável. Para teclado, setup, carro e cantos difíceis.",
     "price": "R$ 51,90",
@@ -19,6 +20,7 @@
   },
   {
     "id": "frigideira-24cm-antiaderente",
+    "marketplaceItemId": "MLB7514174346",
     "name": "Frigideira Antiaderente 24 cm + Espátula",
     "description": "Frigideira de 24 cm com revestimento antiaderente e espátula de nylon inclusa. Mais praticidade para o dia a dia.",
     "price": "R$ 52,90",
@@ -37,6 +39,7 @@
   },
   {
     "id": "torneira-flexivel-preta",
+    "marketplaceItemId": "MLB6545552150",
     "name": "Torneira Flexível Preta",
     "description": "Torneira de parede com haste flexível e jato potente para facilitar a rotina da cozinha.",
     "price": "Consulte no Mercado Livre",
