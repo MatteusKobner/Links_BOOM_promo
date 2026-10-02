@@ -1,0 +1,19 @@
+name: Diagnosticar consulta de preço
+on:
+  push:
+    paths:
+      - '.github/workflows/diagnose-sale-price.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Consultar sale_price das panelas sem autenticação
+        shell: bash
+        run: |
+          curl --silent --show-error --max-time 30 --output response.json --write-out 'HTTP %{http_code}\n' 'https://api.mercadolibre.com/items/MLB4590121239/sale_price?context=channel_marketplace'
+          head -c 5000 response.json
+          echo
