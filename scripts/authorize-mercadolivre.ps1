@@ -81,11 +81,25 @@ try {
 if (-not $token.access_token -or -not $token.refresh_token) { throw 'Resposta sem os tokens necessarios.' }
 
 Write-Host 'DIAGNOSTICO DE ACESSO (sem exibir dados da conta ou tokens)'
+$grantedScopes = @(([string]$token.scope) -split ' ' | Where-Object { $_ -in @('read', 'write', 'offline_access') })
+Write-Host ("Escopos gerais do token: " + ($grantedScopes -join ', '))
+try {
+    $application = Invoke-RestMethod -Uri "https://api.mercadolibre.com/applications/$clientId" -Headers @{ Authorization = "Bearer $($token.access_token)" } -TimeoutSec 30
+    Write-Host 'Aplicativo /applications : HTTP 200'
+    foreach ($field in @('active', 'sandbox_mode')) {
+        if ($null -eq $application.$field) { Write-Host ("Aplicativo " + $field + ": nao informado") }
+        else { Write-Host ("Aplicativo " + $field + ": " + [bool]$application.$field) }
+    }
+    $application = $null
+} catch { Show-ApiFailure $_ 'Aplicativo /applications' }
 try {
     $account = Invoke-RestMethod -Uri 'https://api.mercadolibre.com/users/me' -Headers @{ Authorization = "Bearer $($token.access_token)" } -TimeoutSec 30
     if (-not $account.id) { throw 'Resposta sem identificador de conta.' }
-    $account = $null
     Write-Host 'Token /users/me : HTTP 200'
+    $accountStatus = [string] $account.status.site_status
+    if ($accountStatus -match '^[a-z_]{1,40}$') { Write-Host ("Conta site_status: " + $accountStatus) }
+    else { Write-Host 'Conta site_status: nao informado' }
+    $account = $null
 } catch { Show-ApiFailure $_ 'Token /users/me' }
 try {
     $listing = Invoke-RestMethod -Uri 'https://api.mercadolibre.com/items/MLB4590121239' -Headers @{ Authorization = "Bearer $($token.access_token)" } -TimeoutSec 30
