@@ -83,7 +83,7 @@
     "id": "squishy-pao-glitter",
     "name": "Squishy Pão com Glitter",
     "description": "Brinquedo macio de apertar em formato de pão, com glitter e carinha divertida. Acompanha cestinha dourada.",
-    "price": "Consulte no Mercado Livre",
+    "price": "R$ 28,95",
     "store": "Mercado Livre",
     "url": "https://meli.la/1sgPQjT",
     "badge": "Novo achadinho",
@@ -95,6 +95,7 @@
     ],
     "active": true,
     "image": "/assets/squishy-pao-glitter.webp",
-    "alt": "Squishy roxo com glitter e carinha em cestinha dourada, com logo da BOOM Promo"
+    "alt": "Squishy roxo com glitter e carinha em cestinha dourada, com logo da BOOM Promo",
+    "originalPrice": "R$ 42,90"
   }
 ]
