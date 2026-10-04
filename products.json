@@ -5,7 +5,7 @@
     "name": "Mini Soprador Turbo 130.000 RPM",
     "description": "Compacto, sem fio e recarregável. Para teclado, setup, carro e cantos difíceis.",
     "price": "R$ 46,90",
-    "originalPrice": "R$ 96,90",
+    "originalPrice": "R$ 96,00",
     "store": "Mercado Livre",
     "url": "https://meli.la/2966qon",
     "badge": "Achadinho do momento",
@@ -24,7 +24,7 @@
     "marketplaceItemId": "MLB7514174346",
     "name": "Frigideira Antiaderente 24 cm + Espátula",
     "description": "Frigideira de 24 cm com revestimento antiaderente e espátula de nylon inclusa. Mais praticidade para o dia a dia.",
-    "price": "R$ 48,90",
+    "price": "R$ 53,90",
     "originalPrice": "R$ 78,90",
     "store": "Mercado Livre",
     "url": "https://meli.la/1bwg6dp",
@@ -64,7 +64,7 @@
     "marketplaceItemId": "MLB4590121239",
     "name": "Jogo de Panelas Cerâmicas Antiaderentes 5 Peças",
     "description": "Kit com panelas, caçarola, frigideira e protetor de silicone. Revestimento cerâmico para uma cozinha prática e elegante.",
-    "price": "R$ 252,86",
+    "price": "R$ 266,17",
     "originalPrice": "R$ 491,41",
     "store": "Mercado Livre",
     "url": "https://meli.la/1EKUvPq",
@@ -78,5 +78,23 @@
     "active": true,
     "image": "/assets/jogo-panelas-ceramica-5pc.png",
     "alt": "Jogo de panelas claro com cinco peças, revestimento cerâmico e tampas de vidro"
+  },
+  {
+    "id": "squishy-pao-glitter",
+    "name": "Squishy Pão com Glitter",
+    "description": "Brinquedo macio de apertar em formato de pão, com glitter e carinha divertida. Acompanha cestinha dourada.",
+    "price": "Consulte no Mercado Livre",
+    "store": "Mercado Livre",
+    "url": "https://meli.la/1sgPQjT",
+    "badge": "Novo achadinho",
+    "features": [
+      "Formato de pão",
+      "Com glitter",
+      "Macio de apertar",
+      "Cestinha inclusa"
+    ],
+    "active": true,
+    "image": "/assets/squishy-pao-glitter.webp",
+    "alt": "Squishy roxo com glitter e carinha em cestinha dourada, com logo da BOOM Promo"
   }
 ]
