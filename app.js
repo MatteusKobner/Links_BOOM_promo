@@ -58,7 +58,7 @@ async function loadProducts() {
         const hasOriginalPrice = isCurrencyPrice && /^R\$\s*[\d.,]+$/.test(product.originalPrice || '') && product.originalPrice !== product.price;
         return `
       <article class="card">
-        <div class="product-media">
+        <div class="product-media${product.logoEmbedded === true ? ' logo-embedded' : ''}">
           ${image ? `<img class="product-image" src="${escapeAttribute(image)}" alt="${escapeAttribute(product.alt || product.name)}" loading="lazy" decoding="async" width="800" height="1400">` : imagePlaceholder()}
         </div>
         <div class="card-content">

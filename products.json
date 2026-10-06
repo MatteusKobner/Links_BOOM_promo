@@ -17,7 +17,7 @@
     ],
     "active": true,
     "image": "/assets/mini-soprador-davely.webp",
-    "alt": "Mini Soprador Davely preto em destaque na arte original da BOOM Promo"
+    "alt": "Mini Soprador Davely preto em destaque com exemplos de uso em eletrônicos, carro, churrasqueira e estofados"
   },
   {
     "id": "frigideira-24cm-antiaderente",
@@ -95,7 +95,27 @@
     ],
     "active": true,
     "image": "/assets/squishy-pao-glitter.webp",
+    "logoEmbedded": true,
     "alt": "Squishy roxo com glitter e carinha em cestinha dourada, com logo da BOOM Promo",
     "originalPrice": "R$ 42,90"
+  },
+  {
+    "id": "faqueiro-tramontina-buzios-24pc",
+    "name": "Faqueiro Tramontina Búzios 24 Peças",
+    "description": "Conjunto completo de talheres Tramontina para seis pessoas, ideal para as refeições do dia a dia.",
+    "price": "R$ 59,67",
+    "originalPrice": "R$ 64,86",
+    "store": "Mercado Livre",
+    "url": "https://meli.la/2mpS9zM",
+    "badge": "Novo achadinho",
+    "features": [
+      "24 peças",
+      "Serve 6 pessoas",
+      "Aço inox",
+      "Facas com serrilha"
+    ],
+    "active": true,
+    "image": "/assets/faqueiro-tramontina-buzios-24pc.webp",
+    "alt": "Faqueiro Tramontina Búzios com 24 peças, caixa do produto e talheres em aço inox"
   }
 ]
