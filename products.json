@@ -24,7 +24,7 @@
     "marketplaceItemId": "MLB7514174346",
     "name": "Frigideira Antiaderente 24 cm + Espátula",
     "description": "Frigideira de 24 cm com revestimento antiaderente e espátula de nylon inclusa. Mais praticidade para o dia a dia.",
-    "price": "R$ 53,90",
+    "price": "R$ 56,90",
     "originalPrice": "R$ 78,90",
     "store": "Mercado Livre",
     "url": "https://meli.la/1bwg6dp",
@@ -44,10 +44,10 @@
     "marketplaceItemId": "MLB6545552150",
     "name": "Torneira Flexível Preta",
     "description": "Torneira de parede com haste flexível e jato potente para facilitar a rotina da cozinha.",
-    "price": "R$ 32,97",
+    "price": "R$ 29,97",
     "originalPrice": "R$ 39,97",
     "store": "Mercado Livre",
-    "url": "https://meli.la/1py1jdG",
+    "url": "https://meli.la/1Ad4VDp",
     "badge": "Nova recomendação",
     "features": [
       "Haste flexível",
@@ -64,10 +64,10 @@
     "marketplaceItemId": "MLB4590121239",
     "name": "Jogo de Panelas Cerâmicas Antiaderentes 5 Peças",
     "description": "Kit com panelas, caçarola, frigideira e protetor de silicone. Revestimento cerâmico para uma cozinha prática e elegante.",
-    "price": "R$ 266,17",
-    "originalPrice": "R$ 491,41",
+    "price": "R$ 258,00",
+    "originalPrice": "R$ 497,23",
     "store": "Mercado Livre",
-    "url": "https://meli.la/1EKUvPq",
+    "url": "https://meli.la/2EmHb1k",
     "badge": "Novo achadinho",
     "features": [
       "5 peças",
@@ -95,16 +95,15 @@
     ],
     "active": true,
     "image": "/assets/squishy-pao-glitter.webp",
-    "logoEmbedded": true,
-    "alt": "Squishy roxo com glitter e carinha em cestinha dourada, com logo da BOOM Promo",
+    "alt": "Squishies coloridos com iluminação LED, glitter e carinhas, apresentados em pequenas cestinhas",
     "originalPrice": "R$ 42,90"
   },
   {
     "id": "faqueiro-tramontina-buzios-24pc",
     "name": "Faqueiro Tramontina Búzios 24 Peças",
     "description": "Conjunto completo de talheres Tramontina para seis pessoas, ideal para as refeições do dia a dia.",
-    "price": "R$ 59,67",
-    "originalPrice": "R$ 64,86",
+    "price": "R$ 61,79",
+    "originalPrice": "R$ 108,99",
     "store": "Mercado Livre",
     "url": "https://meli.la/2mpS9zM",
     "badge": "Novo achadinho",
@@ -117,5 +116,23 @@
     "active": true,
     "image": "/assets/faqueiro-tramontina-buzios-24pc.webp",
     "alt": "Faqueiro Tramontina Búzios com 24 peças, caixa do produto e talheres em aço inox"
+  },
+  {
+    "id": "mesa-escritorio-em-l",
+    "name": "Mesa de Escritório em L",
+    "description": "Mesa ampla em formato de L, com tampo amadeirado e estrutura preta para organizar o escritório ou home office.",
+    "price": "Consulte no Mercado Livre",
+    "store": "Mercado Livre",
+    "url": "https://meli.la/1DuuzVk",
+    "badge": "Novo achadinho",
+    "features": [
+      "Formato em L",
+      "Tampo amadeirado",
+      "Estrutura preta",
+      "Para home office"
+    ],
+    "active": true,
+    "image": "/assets/mesa-escritorio-em-l.webp",
+    "alt": "Mesa de escritório em L com tampo amadeirado e estrutura preta em um ambiente de home office"
   }
 ]
