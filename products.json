@@ -47,7 +47,7 @@
     "price": "R$ 29,97",
     "originalPrice": "R$ 39,97",
     "store": "Mercado Livre",
-    "url": "https://meli.la/1Ad4VDp",
+    "url": "https://meli.la/1py1jdG",
     "badge": "Nova recomendação",
     "features": [
       "Haste flexível",
@@ -67,7 +67,7 @@
     "price": "R$ 258,00",
     "originalPrice": "R$ 497,23",
     "store": "Mercado Livre",
-    "url": "https://meli.la/2EmHb1k",
+    "url": "https://meli.la/1TUoJwm",
     "badge": "Novo achadinho",
     "features": [
       "5 peças",
@@ -76,8 +76,8 @@
       "Compatível com indução"
     ],
     "active": true,
-    "image": "/assets/jogo-panelas-ceramica-5pc.png",
-    "alt": "Jogo de panelas claro com cinco peças, revestimento cerâmico e tampas de vidro"
+    "image": "/assets/jogo-panelas-ceramica-5pc.webp",
+    "alt": "Jogo de panelas com cinco peças em tons de vinho e creme, revestimento cerâmico e tampas de vidro"
   },
   {
     "id": "squishy-pao-glitter",
@@ -85,7 +85,7 @@
     "description": "Brinquedo macio de apertar em formato de pão, com glitter e carinha divertida. Acompanha cestinha dourada.",
     "price": "R$ 28,95",
     "store": "Mercado Livre",
-    "url": "https://meli.la/1sgPQjT",
+    "url": "https://meli.la/2EmHb1k",
     "badge": "Novo achadinho",
     "features": [
       "Formato de pão",
