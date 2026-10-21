@@ -134,5 +134,24 @@
     "active": true,
     "image": "/assets/mesa-escritorio-em-l.webp",
     "alt": "Mesa de escritório em L com tampo amadeirado e estrutura preta em um ambiente de home office"
+  },
+  {
+    "id": "relogio-despertador-led",
+    "name": "Relógio Despertador Digital LED",
+    "description": "Despertador digital compacto com visor LED e recursos práticos para a mesa de cabeceira ou escritório.",
+    "price": "R$ 32,86",
+    "originalPrice": "R$ 74,69",
+    "store": "Mercado Livre",
+    "url": "https://meli.la/1HTQvvd",
+    "badge": "Novo achadinho",
+    "features": [
+      "Alarme",
+      "Data e hora",
+      "Temperatura",
+      "Função soneca"
+    ],
+    "active": true,
+    "image": "/assets/relogio-despertador-led.webp",
+    "alt": "Relógio despertador digital LED preto mostrando as funções de alarme, data, hora, temperatura e soneca"
   }
 ]
