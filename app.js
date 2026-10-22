@@ -78,7 +78,7 @@ async function loadProducts() {
                 <div class="price${isCurrencyPrice ? '' : ' price-note'}">${isCurrencyPrice ? escapeHtml(product.price) : 'O preço pode ter mudado'}</div>
               </div>
             </div>
-            ${isPriceFresh ? `<small class="price-verified">Preço verificado em ${formatVerificationDate(product.data_verificacao)}</small>` : ''}
+            ${isCurrencyPrice ? `<small class="price-verified">Preço verificado em ${formatVerificationDate(product.data_verificacao)}</small>` : ''}
             ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" data-product-id="${escapeAttribute(product.id || product.name)}" data-product-name="${escapeAttribute(product.name)}" aria-label="${escapeAttribute(`Ver preço atualizado de ${product.name} no ${product.store || 'site da loja'} (abre em nova aba)`)}">Ver preço atualizado no Mercado Livre <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
           </div>
         </div>
