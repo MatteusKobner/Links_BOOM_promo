@@ -30,7 +30,8 @@ async function loadProducts() {
   const counter = document.querySelector('#product-count');
   const searchInput = document.querySelector('#product-search');
   try {
-    const response = await fetch('/products.json', { cache: 'no-store' });
+    // A rota no próprio domínio consulta a planilha sem depender de CORS no navegador.
+    const response = await fetch('/api/products', { cache: 'no-store' });
     if (!response.ok) throw new Error(`Falha ao carregar produtos: ${response.status}`);
     const data = await response.json();
     if (!Array.isArray(data)) throw new Error('Formato inválido de produtos');
@@ -38,9 +39,11 @@ async function loadProducts() {
       !Array.isArray(product) && typeof product.name === 'string' && product.name.trim() && product.active !== false);
     let cardObserver;
     let focusObserver;
+    let expiryTimer;
     function showProducts() {
       cardObserver?.disconnect();
       focusObserver?.disconnect();
+      clearTimeout(expiryTimer);
       const query = normalizeSearch(searchInput.value.trim());
       const visible = query ? products.filter(product => normalizeSearch([
         product.name, product.description, product.badge, product.store,
@@ -54,7 +57,8 @@ async function loadProducts() {
       container.innerHTML = visible.map(product => {
         const image = safeUrl(product.image, true);
         const url = safeUrl(product.url);
-        const isCurrencyPrice = /^R\$\s*[\d.,]+$/.test(product.price || '');
+        const isPriceFresh = isVerifiedWithin48Hours(product.data_verificacao);
+        const isCurrencyPrice = isPriceFresh && /^R\$\s*[\d.,]+$/.test(product.price || '');
         const hasOriginalPrice = isCurrencyPrice && /^R\$\s*[\d.,]+$/.test(product.originalPrice || '') && product.originalPrice !== product.price;
         return `
       <article class="card">
@@ -71,10 +75,11 @@ async function loadProducts() {
               <div class="store">${escapeHtml(product.store || 'Loja parceira')}</div>
               <div class="price-details">
                 ${hasOriginalPrice ? `<del class="original-price">${escapeHtml(product.originalPrice)}</del>` : ''}
-                <div class="price${isCurrencyPrice ? '' : ' price-note'}">${escapeHtml(product.price || 'Ver oferta')}</div>
+                <div class="price${isCurrencyPrice ? '' : ' price-note'}">${isCurrencyPrice ? escapeHtml(product.price) : 'O preço pode ter mudado'}</div>
               </div>
             </div>
-            ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" data-product-id="${escapeAttribute(product.id || product.name)}" data-product-name="${escapeAttribute(product.name)}" aria-label="${escapeAttribute(`Veja ${product.name} no ${product.store || 'site da loja'} (abre em nova aba)`)}">Ir para o ${escapeHtml(product.store || 'site da loja')} <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
+            ${isPriceFresh ? `<small class="price-verified">Preço verificado em ${formatVerificationDate(product.data_verificacao)}</small>` : ''}
+            ${url ? `<a class="cta" href="${escapeAttribute(url)}" target="_blank" rel="noopener noreferrer sponsored" data-product-id="${escapeAttribute(product.id || product.name)}" data-product-name="${escapeAttribute(product.name)}" aria-label="${escapeAttribute(`Ver preço atualizado de ${product.name} no ${product.store || 'site da loja'} (abre em nova aba)`)}">Ver preço atualizado no Mercado Livre <span aria-hidden="true">→</span></a>` : '<span class="cta-unavailable">Oferta indisponível no momento</span>'}
           </div>
         </div>
       </article>`;
@@ -105,9 +110,19 @@ async function loadProducts() {
         img.addEventListener('error', showPlaceholder, { once: true });
         if (img.complete && img.naturalWidth === 0) showPlaceholder();
       });
+      // Atualiza a interface no instante em que a próxima verificação expira.
+      const nextExpiry = visible.map(product => Date.parse(product.data_verificacao) + 48 * 60 * 60 * 1000)
+        .filter(expiry => Number.isFinite(expiry) && expiry >= Date.now())
+        .sort((a, b) => a - b)[0];
+      if (nextExpiry !== undefined) {
+        expiryTimer = setTimeout(showProducts, Math.min(Math.max(nextExpiry - Date.now() + 1, 1), 2147483647));
+      }
     }
     searchInput.disabled = false;
     searchInput.addEventListener('input', showProducts);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) showProducts();
+    });
     showProducts();
   } catch (error) {
     console.error(error);
@@ -120,6 +135,16 @@ async function loadProducts() {
 
 function normalizeSearch(value) {
   return String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
+}
+
+function isVerifiedWithin48Hours(value) {
+  const verifiedAt = new Date(value);
+  const age = Date.now() - verifiedAt.getTime();
+  return Number.isFinite(verifiedAt.getTime()) && age >= 0 && age <= 48 * 60 * 60 * 1000;
+}
+
+function formatVerificationDate(value) {
+  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo' }).format(new Date(value));
 }
 
 // Preserve a sanitização mesmo quando os valores vierem do JSON.
