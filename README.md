@@ -4,7 +4,7 @@ Site sem framework. Os cards são carregados pelo `app.js` a partir de `/api/pro
 
 ## Adicionar ou editar produtos
 
-Use a aba `Produtos` da planilha BOOM Promo. Para alterar preços após conferência manual, envie `/preco ID 51,00` ao bot; `/link ID https://meli.la/...` altera somente o link. `products.json` permanece como referência local e não alimenta mais os cards publicados.
+Use a aba `Produtos` da planilha BOOM Promo. Para alterar preços após conferência manual, envie `/preco ID 51,00` ao bot; `/link ID https://meli.la/...` altera somente o link. A planilha é a única fonte do catálogo publicado.
 
 O JSON da planilha contém objetos como:
 
@@ -17,7 +17,7 @@ O JSON da planilha contém objetos como:
   "data_verificacao": "2026-10-22T17:59:00.000Z",
   "store": "Mercado Livre",
   "url": "https://meli.la/SEU-LINK",
-  "badge": "Achadinho do momento",
+  "badge": "",
   "features": ["Característica 1", "Característica 2", "Característica 3"],
   "active": true,
   "image": "/assets/foto-do-produto.webp",
@@ -25,7 +25,7 @@ O JSON da planilha contém objetos como:
 }
 ```
 
-Os preços aparecem apenas por 48 horas após `data_verificacao`; sem data ou com prazo vencido, aparece “O preço pode ter mudado”. O link do produto continua disponível. Alterar somente o link ou a visibilidade não renova a data de verificação. Coloque as fotos corretas em `assets/`. Prefira WebP otimizado. O layout mantém a imagem inteira, sem recortá-la. Deixe `image` e `alt` vazios quando não houver uma foto correta: o card exibe “Foto em breve”. Imagens que falharem também recebem esse tratamento. Até quatro características aparecem no card. `active: false` oculta o produto.
+Os preços aparecem apenas por 48 horas após `data_verificacao`; sem data ou com prazo vencido, aparece “O preço pode ter mudado”. O link do produto continua disponível. Alterar somente o link ou a visibilidade não renova a data de verificação. Use selos promocionais somente quando estiverem comprovados. Coloque as fotos corretas em `assets/`. Prefira WebP otimizado. O layout mantém a imagem inteira, sem recortá-la. Deixe `image` e `alt` vazios quando não houver uma foto correta: o card exibe “Foto em breve”. Imagens que falharem também recebem esse tratamento. Até quatro características aparecem no card. `active: false` oculta o produto.
 
 A foto atual do Davely é uma versão otimizada da imagem existente “Mini Soprador Davely em Destaque.png”, sem recriar ou modificar o produto. A logo sem fundo enviada está em `assets/logo.png`, otimizada e com transparência preservada.
 
