@@ -1,0 +1,6 @@
+automation/
+tests/
+**/*.test.mjs
+README.md
+.git/
+.env*

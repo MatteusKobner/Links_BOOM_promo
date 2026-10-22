@@ -1,29 +1,51 @@
-# Bot de atualização da BOOM Promo
+# BOOM Promo — bot e catálogo com acesso controlado
 
-O arquivo `Code.gs` é executado no Google Apps Script e mantém a planilha como fonte dos produtos.
+## Atualização da instalação existente
 
-## Configuração segura
+1. Na Vercel, projeto BOOM Promo → Settings → Environment Variables, copie o valor de `CATALOG_READ_KEY`. A chave é exclusiva para leitura; não use o token do Telegram nem o segredo do webhook.
+2. No **mesmo projeto Apps Script**, Configurações do projeto → Propriedades do script, adicione `CATALOG_READ_KEY` com exatamente esse valor. Preserve `SPREADSHEET_ID`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `WEB_APP_URL` e **`ALLOWED_CHAT_ID`**.
+3. Substitua o código pelo arquivo `Code.gs`, salve e atualize a **mesma implantação**: Implantar → Gerenciar implantações → Editar → Nova versão → Implantar. Não crie outro projeto nem outra URL.
+4. Execute `installWebhook` uma vez para atualizar os comandos. Não há descarte de mensagens pendentes. Execute `diagnosticarWebhook` se necessário; seu retorno não contém segredos.
+5. No Telegram autorizado, envie `/produtos`. Após conferir um preço real, teste `/preco ID VALOR`. Recarregue o site após até 45 segundos e confira o produto. A data de verificação corresponde ao envio do comando, não à tentativa de entrega.
 
-1. No projeto Apps Script da BOOM Promo, substitua o conteúdo de `Código.gs` pelo arquivo `Code.gs` e salve.
-2. Em **Configurações do projeto → Propriedades do script**, crie: `SPREADSHEET_ID`, `TELEGRAM_BOT_TOKEN`, `TELEGRAM_WEBHOOK_SECRET`, `SETUP_CODE` e `WEB_APP_URL`. Não crie `ALLOWED_CHAT_ID`: ele será registrado pelo primeiro acesso autorizado.
-3. Publique como **Aplicativo da Web**, com acesso para qualquer pessoa. Copie a URL `/exec`.
-4. Atualize `WEB_APP_URL` com a URL `/exec` recebida na publicação. No editor do Apps Script, execute `installWebhook` para conectar o Telegram sem expor o token.
-5. Envie `/start SEU_SETUP_CODE` no chat privado. Isso vincula somente essa conversa ao bot.
-6. Envie `/produtos` e confira a lista antes de testar qualquer alteração.
-7. Execute `diagnosticarWebhook` no editor caso o bot não responda. O registro mostra apenas se o webhook está ativo, a quantidade de mensagens pendentes e a última falha. Não divulgue a URL do webhook, pois contém o segredo.
-8. Depois de testar o bot, publique o site com `/api/products` na Vercel e valide a leitura no navegador. Essa rota consulta a URL pública `/exec` sem expor o segredo do webhook.
+**A ordem importa:** configurar a chave antes de publicar o novo Apps Script evita interromper o catálogo. O site pode usar a nova chave com o script antigo durante a transição; o script antigo ainda permite leitura pública até ser substituído. Depois da atualização, abrir `/exec` sem chave retorna `Unauthorized`: esse resultado passa a ser esperado. O catálogo público continua disponível no site em `/api/products`, sem expor a chave.
 
-Ao editar o script já publicado: **Implantar → Gerenciar implantações → Editar → Nova versão**. A URL `/exec` é mantida ao editar a mesma implantação. Execute `installWebhook` novamente se mudar o segredo, o token ou a URL, ou para aplicar a configuração de uma conexão por vez.
+Não envie segredos pelo chat. O valor da chave não está neste repositório. A Vercel deve ter `CATALOG_READ_KEY` configurada no servidor antes do deploy. Não use prefixos públicos, como `NEXT_PUBLIC_`.
 
-O webhook retorna HTML simples para evitar o redirecionamento do `ContentService` nas respostas ao Telegram. Os produtos continuam servidos como JSON em `doGet`.
+## Autorização do bot
 
-O comando `/preco` registra uma nova data de verificação; use-o apenas após conferir o preço. Os comandos `/link`, `/ativar` e `/desativar` não renovam a data do preço. `/atualizar` valida preço e link antes de gravar.
+Não existe mais vinculação automática por `/start`. Somente o ID **já configurado** em `ALLOWED_CHAT_ID`, em conversa privada e com remetente correspondente, pode executar comandos. `SETUP_CODE` não é usado e pode ser removido. Se `ALLOWED_CHAT_ID` estiver ausente, o bot ignora mensagens; configure o ID da sua própria conta diretamente nas propriedades do editor. Nunca informe IDs de terceiros para habilitar o bot.
 
-## Comandos permitidos
+Uma instalação nova precisa das propriedades acima e dos cabeçalhos da aba `Produtos` na linha 4. A implantação é do tipo Aplicativo da Web, executada como o proprietário, com acesso para qualquer pessoa: os handlers fazem a autenticação antes de ler ou modificar dados.
 
-- `/produtos`
-- `/preco ID 51,00`
-- `/link ID https://meli.la/...`
-- `/atualizar ID 51,00 https://meli.la/...`
-- `/ativar ID`
-- `/desativar ID`
+## Comandos
+
+- `/produtos` ou `/produtos 2` — lista paginada de produtos ativos.
+- `/preco ID 51,00` — atualiza preço e a data da conferência.
+- `/link ID https://meli.la/...` — altera somente o link.
+- `/atualizar ID 51,00 https://meli.la/...` — valida preço e link antes da gravação.
+- `/adicionar ID | Nome | Descrição | 51,00 | https://meli.la/... | imagem opcional | alt opcional | característica 1; característica 2 | selo opcional`
+- `/ativar ID` e `/desativar ID` — alteram somente a visibilidade.
+
+Não escreva as palavras `ID` e `VALOR`: substitua pelos dados reais. Preços usam vírgula decimal (`51,00`). O cadastro aceita 5 a 9 campos, no máximo 1000 produtos. Características usam **ponto e vírgula** dentro do mesmo campo. Campos extras são rejeitados. Informe somente benefícios comprovados; deixe o selo vazio quando não houver um verificado.
+
+Imagem opcional: arquivo já publicado em `/assets/` ou URL HTTPS pública, sem credenciais. O bot ainda não envia fotos ao site; imagem vazia mostra “Foto em breve”. Links existentes não são alterados por esta atualização.
+
+## Proteções e recuperação
+
+- Texto é gravado como literal; entradas que poderiam virar fórmulas são neutralizadas.
+- `BotRecebimentos` é criada automaticamente e mantém recibos por 48 horas. O bot só aceita comandos enviados há até 24 horas. Não apague ou edite essa aba durante a operação.
+- O recibo `processing` é persistido antes de gravar. Se houver interrupção nesse intervalo, uma reentrega **não executa novamente**. A mensagem orienta conferir `/produtos` e `Historico`. Corrija manualmente ou envie um novo comando apenas após conferir o resultado. Sheets não oferece transação atômica entre todas as operações; gravação parcial é possível, mas não é repetida automaticamente.
+- Erro de envio ao Telegram permite reenviar a resposta já calculada, sem repetir a alteração do produto. Uma falha entre envio e registro pode duplicar uma resposta, não a operação.
+- Alterar link/visibilidade não renova o TTL. Preços sem data, futuros ou vencidos são ocultados na fonte e no site.
+- Cache de catálogo por até 15 s na fonte, até 15 s na função e CDN com validade limitada à janela restante. Considere até 45 s na transição; não existe fallback permanente com preço antigo.
+- A chave protege a leitura da planilha. O endpoint do Apps Script continua acessível na internet e recebe requisições antes da autenticação: isso não elimina as cotas da plataforma nem substitui proteção contra DDoS.
+- Compartilhe a planilha e o projeto Apps Script somente com os responsáveis. Caso um token/segredo real tenha sido divulgado, revogue-o no serviço de origem e atualize as propriedades; apagar mensagens não o revoga.
+
+## Testes locais
+
+```sh
+node --test tests/*.test.mjs automation/google-apps-script/test.mjs
+```
+
+Os testes usam serviços simulados, sem alterar a planilha ou enviar mensagens reais. Eles cobrem acesso negado, fórmulas, reentregas, falhas parciais, TTL, cache, validação do catálogo e escape de HTML. A configuração das contas e a instalação real do Apps Script precisam de validação separada após publicar.

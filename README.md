@@ -1,6 +1,6 @@
 # BOOM Promo — Vitrine de achadinhos
 
-Site sem framework. Os cards são carregados pelo `app.js` a partir de `/api/products`, uma função na Vercel que consulta o catálogo público do Google Apps Script. O bot no Telegram altera a planilha e uma nova visita ao site lê esses dados. A API do Mercado Livre não é consultada.
+Site sem framework. Os cards são carregados pelo `app.js` a partir de `/api/products`, uma função na Vercel que consulta o Google Apps Script com uma chave exclusiva de leitura mantida no servidor. O bot no Telegram altera a planilha e o site lê esses dados com cache curto (considere até 45 segundos antes de recarregar). A API do Mercado Livre não é consultada.
 
 ## Adicionar ou editar produtos
 
@@ -35,8 +35,16 @@ No início de `app.js`, preencha `socialLinks` apenas com URLs reais dos perfis.
 
 ## Testar localmente
 
-Na pasta do projeto, execute `vercel dev` e abra a URL indicada. Isso executa também `/api/products`; um servidor de arquivos estáticos não executa a função. Para testar a rota isoladamente sem rede, rode `node --test api/products.test.mjs`.
+Na pasta do projeto, execute `vercel dev` e abra a URL indicada. Isso executa também `/api/products`; um servidor de arquivos estáticos não executa a função. Para testar a rota isoladamente sem rede, rode `node --test tests/*.test.mjs automation/google-apps-script/test.mjs`.
 
 ## Publicação
 
 A branch principal está integrada à Vercel. Um push dispara o deploy automaticamente. Não há dependências ou etapa de build.
+
+## Segurança e configuração
+
+Configure `CATALOG_READ_KEY` na Vercel e nas propriedades do Apps Script. Não publique seu valor, tokens ou arquivos `.env`. A rota falha sem uma chave válida; o código do navegador não recebe a chave. Siga a ordem de implantação em `automation/google-apps-script/README.md`.
+
+A API valida campos e limita o tamanho da resposta, aceita apenas leitura sem parâmetros, bloqueia URLs de afiliado fora de `https://meli.la/`, limita cache ao TTL e agrupa consultas simultâneas na mesma instância. A CDN recebe cache curto sem stale-while-revalidate; falhas não reutilizam dados vencidos. O cache não é um limite global de requisições. CSP, escape de HTML e validação de links protegem os cards. As métricas só são carregadas após consentimento.
+
+`.vercelignore` exclui testes, documentação e automação do pacote do site. Não há scraping nem chamadas à API do Mercado Livre.

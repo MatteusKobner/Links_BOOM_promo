@@ -13,6 +13,10 @@
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
     document.head.append(script);
+    const insights = document.createElement('script');
+    insights.defer = true;
+    insights.src = '/_vercel/insights/script.js';
+    document.head.append(insights);
   }
 
   function trackAffiliateClick(link) {
@@ -34,14 +38,15 @@
     banner.addEventListener('click', event => {
       const choice = event.target.closest('[data-analytics-choice]')?.dataset.analyticsChoice;
       if (!choice) return;
-      localStorage.setItem(consentKey, choice);
+      try { localStorage.setItem(consentKey, choice); } catch { /* consentimento vale para esta visita */ }
       if (choice === 'granted') startAnalytics();
       banner.remove();
     });
     document.body.append(banner);
   }
 
-  const consent = localStorage.getItem(consentKey);
+  let consent;
+  try { consent = localStorage.getItem(consentKey); } catch { /* navegador pode bloquear armazenamento */ }
   if (consent === 'granted') startAnalytics();
   else if (consent !== 'denied') showConsent();
 

@@ -56,14 +56,14 @@ async function loadProducts() {
       }
       container.innerHTML = visible.map(product => {
         const image = safeUrl(product.image, true);
-        const url = safeUrl(product.url);
+        const url = safeAffiliateUrl(product.url);
         const isPriceFresh = isVerifiedWithin48Hours(product.data_verificacao);
         const isCurrencyPrice = isPriceFresh && /^R\$\s*[\d.,]+$/.test(product.price || '');
         const hasOriginalPrice = isCurrencyPrice && /^R\$\s*[\d.,]+$/.test(product.originalPrice || '') && product.originalPrice !== product.price;
         return `
       <article class="card">
         <div class="product-media${product.logoEmbedded === true ? ' logo-embedded' : ''}">
-          ${image ? `<img class="product-image" src="${escapeAttribute(image)}" alt="${escapeAttribute(product.alt || product.name)}" loading="lazy" decoding="async" width="800" height="1400">` : imagePlaceholder()}
+          ${image ? `<img class="product-image" src="${escapeAttribute(image)}" referrerpolicy="no-referrer" alt="${escapeAttribute(product.alt || product.name)}" loading="lazy" decoding="async" width="800" height="1400">` : imagePlaceholder()}
         </div>
         <div class="card-content">
           ${product.badge ? `<span class="badge">${escapeHtml(product.badge)}</span>` : ''}
@@ -154,13 +154,17 @@ function escapeHtml(value = '') {
   })[char]);
 }
 function escapeAttribute(value = '') { return escapeHtml(value); }
+function safeAffiliateUrl(value) {
+  return typeof value === 'string' && /^https:\/\/meli\.la\/[A-Za-z0-9]+$/.test(value) ? value : '';
+}
 function safeUrl(value, allowLocal = false) {
   if (typeof value !== 'string' || !value.trim()) return '';
   try {
     value = value.trim();
     const url = new URL(value, window.location.origin);
     if (url.username || url.password) return '';
-    if (allowLocal && url.origin === window.location.origin && /^\/(?!\/)/.test(value)) return url.pathname + url.search;
+    if (allowLocal && /^\/assets\/[A-Za-z0-9_-][A-Za-z0-9._-]*$/.test(value)) return value;
+    if (/[\s\\]/.test(value)) return '';
     return /^https:\/\//i.test(value) && url.protocol === 'https:' ? url.href : '';
   } catch { return ''; }
 }
