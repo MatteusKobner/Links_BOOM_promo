@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createCatalogHandler } from '../lib/catalog.mjs';
 const KEY = 'private-test-key-'.repeat(3);
 const time = Date.parse('2026-10-22T18:00:00Z');
-const product = { id: 'frigideira', name: 'Frigideira', active: true, price: 'R$ 56,90', originalPrice: 'R$ 78,90', url: 'https://meli.la/1bwg6dp', image: '/assets/frigideira.webp', data_verificacao: new Date(time).toISOString() };
+const product = { id: 'frigideira', name: 'Frigideira', active: true, badge: 'Brinde conferido', price: 'R$ 56,90', originalPrice: 'R$ 78,90', url: 'https://meli.la/1bwg6dp', image: '/assets/frigideira.webp', data_verificacao: new Date(time).toISOString() };
 const request = path => new Request('https://boompromo.vercel.app' + path);
 function handler(products = [product], extra = {}) { return createCatalogHandler({ fetcher: async () => Response.json(products), now: () => time, readKey: () => KEY, ...extra }); }
 
@@ -11,6 +11,7 @@ test('catálogo validado preserva link exato e nunca expõe campos privados', as
   const get = handler([{ ...product, internal_secret: 'secret', extra: { password: 'never' } }]);
   const response = await get(); const data = await response.json();
   assert.equal(data[0].price, 'R$ 56,90'); assert.equal(data[0].url, product.url);
+  assert.equal(data[0].badge, product.badge);
   assert.equal(data[0].internal_secret, undefined); assert.equal(data[0].extra, undefined);
   assert.equal(response.headers.get('Cache-Control'), 'no-store');
   assert.equal(response.headers.get('Vercel-CDN-Cache-Control'), 'public, s-maxage=15, must-revalidate');
@@ -41,6 +42,7 @@ test('TTL no limite restringe CDN e reavalia preço mesmo no cache em memória',
   const fresh = await get(); assert.equal(fresh.headers.get('Vercel-CDN-Cache-Control'), 'public, s-maxage=2, must-revalidate');
   assert.equal((await fresh.json())[0].price, product.price);
   current += 3000; const data = await (await get()).json(); assert.equal(data[0].price, ''); assert.equal(data[0].originalPrice, '');
+  assert.equal(data[0].badge, '');
 });
 
 test('preço inválido, vencido, sem data e futuro são ocultados; produtos desativados não vazam', async () => {
@@ -51,7 +53,7 @@ test('preço inválido, vencido, sem data e futuro são ocultados; produtos desa
     { ...product, active: false }, { ...product, active: 'false' }, null
   ]);
   const data = await (await get()).json(); assert.equal(data.length, 4);
-  for (const p of data) { assert.equal(p.price, ''); assert.equal(p.originalPrice, ''); }
+  for (const p of data) { assert.equal(p.price, ''); assert.equal(p.originalPrice, ''); assert.equal(p.badge, ''); }
 });
 
 test('links maliciosos e imagens com credenciais/caminhos indevidos são bloqueados', async () => {

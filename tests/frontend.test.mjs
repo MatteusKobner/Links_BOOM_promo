@@ -25,3 +25,36 @@ test('política CSP não permite scripts inline/eval e analytics só inicia apó
     assert.equal(scripts.length, choice === 'granted' ? 2 : 0);
   }
 });
+
+test('card retira selo e preços ao vencer a verificação, mantendo o afiliado', async () => {
+  const verifiedAt = Date.parse('2026-10-29T12:00:00Z');
+  let current = verifiedAt + 48 * 3600 * 1000 - 1000;
+  let expire;
+  const container = { innerHTML: '', querySelectorAll: () => [], setAttribute() {} };
+  const search = { value: '', addEventListener() {} };
+  const counter = {};
+  const document = {
+    querySelector: selector => ({ '#products': container, '#product-search': search, '#product-count': counter })[selector],
+    addEventListener() {}
+  };
+  const sandbox = {
+    URL, Intl, document, console,
+    Date: class extends Date { static now() { return current; } },
+    window: { location: { origin: 'https://boompromo.com.br' } },
+    setTimeout: callback => { expire = callback; return 1; }, clearTimeout() {},
+    fetch: async () => ({ ok: true, json: async () => [{
+      id: 'produto', name: 'Produto', price: 'R$ 51,00', originalPrice: 'R$ 60,00',
+      badge: 'Brinde conferido', url: 'https://meli.la/AbC123',
+      data_verificacao: new Date(verifiedAt).toISOString()
+    }] })
+  };
+  runInNewContext(code, sandbox);
+  await sandbox.loadProducts();
+  assert.match(container.innerHTML, /class="badge"/);
+  assert.match(container.innerHTML, /R\$ 51,00/);
+  current += 2000;
+  expire();
+  assert.doesNotMatch(container.innerHTML, /class="badge"|R\$ 51,00|R\$ 60,00/);
+  assert.match(container.innerHTML, /O preço pode ter mudado/);
+  assert.match(container.innerHTML, /href="https:\/\/meli.la\/AbC123"/);
+});

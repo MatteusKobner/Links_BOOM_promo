@@ -66,7 +66,7 @@ async function loadProducts() {
           ${image ? `<img class="product-image" src="${escapeAttribute(image)}" referrerpolicy="no-referrer" alt="${escapeAttribute(product.alt || product.name)}" loading="lazy" decoding="async" width="800" height="1400">` : imagePlaceholder()}
         </div>
         <div class="card-content">
-          ${product.badge ? `<span class="badge">${escapeHtml(product.badge)}</span>` : ''}
+          ${isPriceFresh && product.badge ? `<span class="badge">${escapeHtml(product.badge)}</span>` : ''}
           <h3 class="product-name">${escapeHtml(product.name)}</h3>
           <p class="desc">${escapeHtml(product.description || '')}</p>
           ${Array.isArray(product.features) && product.features.length ? `<ul class="features">${product.features.slice(0, 4).map(feature => `<li class="feature">${escapeHtml(feature)}</li>`).join('')}</ul>` : ''}
