@@ -21,7 +21,7 @@ test('política CSP não permite scripts inline/eval e analytics só inicia apó
   assert.ok(!html.includes('/_vercel/insights/script.js'));
   for (const choice of ['denied', 'granted']) {
     const scripts = [];
-    runInNewContext(analytics, { window: {}, localStorage: { getItem: () => choice }, document: { createElement: () => ({}), head: { append: s => scripts.push(s.src) }, addEventListener() {} } });
+    runInNewContext(analytics, { window: {}, localStorage: { getItem: () => choice }, document: { querySelector: () => null, createElement: () => ({}), head: { append: s => scripts.push(s.src) }, addEventListener() {} } });
     assert.equal(scripts.length, choice === 'granted' ? 2 : 0);
   }
 });
@@ -57,4 +57,30 @@ test('card retira selo e preços ao vencer a verificação, mantendo o afiliado'
   assert.doesNotMatch(container.innerHTML, /class="badge"|R\$ 51,00|R\$ 60,00/);
   assert.match(container.innerHTML, /O preço pode ter mudado/);
   assert.match(container.innerHTML, /href="https:\/\/meli.la\/AbC123"/);
+});
+
+test('preferências reabrem sem duplicar painel e revogação encerra métricas', () => {
+  const analytics = readFileSync(new URL('../analytics.js', import.meta.url), 'utf8');
+  const scripts = [];
+  const panels = [];
+  let open, choose, reloads = 0;
+  const stored = { value: 'granted', getItem() { return this.value; }, setItem(key, value) { this.value = value; } };
+  const window = { location: { hostname: 'boompromo.com.br', reload() { reloads++; } } };
+  const document = {
+    cookie: '_ga=old; _ga_TEST=old', activeElement: { focus() {} },
+    querySelector: () => ({ addEventListener(type, callback) { open = callback; } }),
+    createElement: () => ({ setAttribute() {}, addEventListener(type, callback) { choose = callback; }, querySelector: () => ({ focus() {} }), remove() {} }),
+    head: { append(script) { scripts.push(script.src); } },
+    body: { append(panel) { panels.push(panel); } }, addEventListener() {}
+  };
+  runInNewContext(analytics, { window, document, localStorage: stored, sessionStorage: stored });
+  assert.equal(scripts.length, 2);
+  open(); open();
+  assert.equal(panels.length, 1);
+  choose({ target: { closest: () => ({ dataset: { analyticsChoice: 'denied' } }) } });
+  assert.equal(stored.value, 'denied');
+  assert.equal(window['ga-disable-G-ZYE5X0D1D5'], true);
+  assert.equal(reloads, 1);
+  open();
+  assert.equal(panels.length, 2);
 });
