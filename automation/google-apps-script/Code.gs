@@ -39,11 +39,13 @@ function doPost(event) {
   try { update = JSON.parse(contents); } catch (_) { return webhookResponse('Ignored'); }
   const message = update && update.message;
   const updateId = update && update.update_id;
+  const isText = message && typeof message.text === 'string';
+  const isPhoto = message && Array.isArray(message.photo) && message.photo.length > 0;
   // Sem vinculação pelo chat: somente o ID configurado pelo dono no editor é aceito.
   if (!settings.allowedChatId || !message || !message.chat || message.chat.type !== 'private' ||
       String(message.chat.id) !== settings.allowedChatId || !message.from || message.from.is_bot ||
       String(message.from.id) !== settings.allowedChatId || !Number.isSafeInteger(updateId) || updateId < 0 ||
-      typeof message.text !== 'string' || message.text.length > 4000 || !Number.isSafeInteger(message.date)) {
+      (!isText && !isPhoto) || (isText && message.text.length > 4000) || !Number.isSafeInteger(message.date)) {
     return webhookResponse('Ignored');
   }
   const sentAt = message.date * 1000;
@@ -60,7 +62,7 @@ function doPost(event) {
       reply = 'Este comando ficou com resultado incerto. Confira /produtos e o Historico na planilha antes de enviar um novo comando.';
     } else if (receipt.state === 'new') {
       commandVerifiedAt = new Date(Math.min(sentAt, Date.now()));
-      try { reply = handleCommand(message.text); }
+      try { reply = handleCommand(isText ? message.text : '/ajuda imagens'); }
       catch (_) { reply = 'Não foi possível concluir o comando. Pode ter ocorrido uma gravação parcial. Confira /produtos e o Historico antes de tentar novamente.'; }
       finally { commandVerifiedAt = null; }
     }
@@ -111,6 +113,7 @@ function installWebhook() {
       { command: 'produtos', description: 'Listar produtos e preços' },
       { command: 'preco', description: 'Atualizar somente o preço' },
       { command: 'link', description: 'Atualizar somente o link' },
+      { command: 'imagem', description: 'Trocar a foto de um produto' },
       { command: 'atualizar', description: 'Atualizar preço e link' },
       { command: 'adicionar', description: 'Cadastrar produto completo' },
       { command: 'ativar', description: 'Exibir produto no site' },
@@ -139,7 +142,10 @@ function handleCommand(text) {
   const [rawCommand, productId, ...args] = normalizedText.split(/\s+/);
   const command = rawCommand.replace(/@[\w_]+$/, '').toLowerCase();
   if (command === '/ajuda' || command === '/start') {
-    return 'Use:\n/preco ID 51,00\n/link ID https://meli.la/...\n/atualizar ID 51,00 https://meli.la/...\n/adicionar ID | Nome | Descrição | 51,00 | https://meli.la/... | imagem opcional | alt opcional | característica 1; característica 2 | selo opcional\n/ativar ID\n/desativar ID\n/produtos';
+    if (/^(imagens?|fotos?)$/i.test(productId || '')) {
+      return 'FOTOS NO SITE\nO bot não publica anexos do Telegram. Primeiro coloque a foto na pasta assets do site (nome simples, sem espaços) e espere a publicação. Depois envie:\n/imagem jogo-panelas-ceramica-5pc /assets/jogo-panelas-pretas-v2.png\nPara produto novo, inclua o caminho da imagem no /adicionar, depois do link. Também é aceita uma URL https direta de imagem pública; link de compartilhamento do Drive não serve. Trocar foto não verifica o preço. Envie /ajuda para os demais comandos.';
+    }
+    return 'BOOM Promo — guia rápido\n1. Veja os IDs: /produtos\n2. Mude o preço: /preco frigideira-24cm-antiaderente 56,90\n3. Mude só o link: /link ID https://meli.la/CODIGO\n4. Preço e link: /atualizar ID 51,00 https://meli.la/CODIGO\n5. Novo produto (troque os dados):\n/adicionar produto-exemplo | Nome | Descrição | 51,00 | https://meli.la/CODIGO\n6. Foto já publicada: /imagem ID /assets/foto.png\n7. Ocultar/mostrar: /desativar ID ou /ativar ID\nFotos: /ajuda imagens\nUse vírgula no preço; não escreva as palavras ID ou CODIGO. Valores devem ser conferidos manualmente.';
   }
   if (command === '/produtos') {
     const products = getProducts();
@@ -163,6 +169,13 @@ function handleCommand(text) {
   }
   if (command === '/preco') return updatePrice(sheet, headers, row, productId, args[0]);
   if (command === '/link') return updateLink(sheet, headers, row, productId, args[0]);
+  if (command === '/imagem') {
+    const image = args[0];
+    if (!image || args.length !== 1 || !isProductImage(image)) return 'Erro: use /imagem ID /assets/foto.png ou uma URL https direta de imagem pública.';
+    updateProduct(sheet, headers, row, { imagem: image });
+    appendHistory(productId, '', '', 'imagem');
+    return `${productId}: imagem atualizada. O preço não foi verificado novamente.`;
+  }
   if (command === '/atualizar') {
     const [price, url] = args;
     const amount = parsePrice(price);
