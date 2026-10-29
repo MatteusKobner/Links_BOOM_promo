@@ -20,16 +20,20 @@ Uma instalação nova precisa das propriedades acima e dos cabeçalhos da aba `P
 
 ## Comandos
 
+- `/ajuda` — mini tutorial com exemplos; `/ajuda imagens` — como publicar e vincular fotos.
 - `/produtos` ou `/produtos 2` — lista paginada de produtos ativos.
 - `/preco ID 51,00` — atualiza preço e a data da conferência.
 - `/link ID https://meli.la/...` — altera somente o link.
 - `/atualizar ID 51,00 https://meli.la/...` — valida preço e link antes da gravação.
+- `/imagem ID /assets/foto.png` — altera somente a foto de um produto existente, sem renovar a verificação do preço.
 - `/adicionar ID | Nome | Descrição | 51,00 | https://meli.la/... | imagem opcional | alt opcional | característica 1; característica 2 | selo opcional`
 - `/ativar ID` e `/desativar ID` — alteram somente a visibilidade.
 
 Não escreva as palavras `ID` e `VALOR`: substitua pelos dados reais. Preços usam vírgula decimal (`51,00`). O cadastro aceita 5 a 9 campos, no máximo 1000 produtos. Características usam **ponto e vírgula** dentro do mesmo campo. Campos extras são rejeitados. Informe somente benefícios comprovados; deixe o selo vazio quando não houver um verificado.
 
-Imagem opcional: arquivo já publicado em `/assets/` ou URL HTTPS pública, sem credenciais. O bot ainda não envia fotos ao site; imagem vazia mostra “Foto em breve”. Links existentes não são alterados por esta atualização.
+Imagem opcional: arquivo já publicado em `/assets/` ou URL HTTPS direta e pública da imagem, sem credenciais. O bot ainda não envia fotos ao site; quando recebe uma foto pelo Telegram, responde com `/ajuda imagens`. Imagem vazia mostra “Foto em breve”. Links existentes não são alterados por esta atualização.
+
+Para gerenciar fotos sem editar a planilha: no GitHub do site, abra `assets` → **Add file** → **Upload files**, envie um PNG/JPG/WebP com nome simples (sem espaços) e confirme o commit. Espere o deploy de produção ficar pronto na Vercel. Para um card existente, envie `/imagem ID /assets/nome-do-arquivo.png` ao bot; para um novo, inclua o mesmo caminho no campo opcional de `/adicionar`. Evite links de compartilhamento do Drive, que não são URLs diretas de imagem. O bot muda o caminho no catálogo, mas não faz upload nem recorta a foto.
 
 ## Proteções e recuperação
 
