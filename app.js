@@ -36,7 +36,7 @@ async function loadProducts() {
     const data = await response.json();
     if (!Array.isArray(data)) throw new Error('Formato inválido de produtos');
     const products = data.filter(product => product && typeof product === 'object' &&
-      !Array.isArray(product) && typeof product.name === 'string' && product.name.trim() && product.active !== false);
+      !Array.isArray(product) && typeof product.name === 'string' && product.name.trim() && product.active !== false).reverse();
     let cardObserver;
     let focusObserver;
     let expiryTimer;
