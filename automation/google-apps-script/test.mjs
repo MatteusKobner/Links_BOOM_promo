@@ -41,13 +41,16 @@ function fixture() {
   return { context, rows, product, properties, cache, sent, history, receipts, event, advance: ms => { time += ms; }, failSend: value => { failSend = value; }, failWrite: value => { failWrite = value; }, flushes: () => flushes };
 }
 
-test('preço BR; link inválido não altera preço, link isolado não renova TTL', () => {
+test('preço BR; preço verificado limpa valor antigo, link isolado não renova TTL', () => {
   const f = fixture(), c = f.context;
   assert.equal(c.parsePrice('1.234,56'), 1234.56);
   assert.ok(Number.isNaN(c.parsePrice('51.00')));
   assert.match(c.handleCommand('/atualizar frigideira 52,00 https://meli.la.evil.test/a'), /^Erro:/);
   assert.equal(f.product[3], 51);
   assert.equal(f.history.length, 0);
+  c.handleCommand('/preco frigideira 52,00');
+  assert.equal(f.product[3], 52); assert.equal(f.product[4], '');
+  f.product[12] = '';
   c.handleCommand('/link frigideira https://meli.la/AbC123');
   assert.equal(f.product[6], 'https://meli.la/AbC123'); assert.equal(f.product[12], '');
 });
@@ -108,9 +111,52 @@ test('cadastro neutraliza fórmulas, preserva link e rejeita campos excedentes/I
   assert.equal(row[6], 'https://meli.la/AbC123'); assert.equal(row[3], 79.9);
   assert.match(c.handleCommand(command), /^Erro: já existe/);
   assert.match(c.handleCommand(command + ' | campo extra'), /^Erro:/);
-  assert.match(c.handleCommand('/ajuda'), /característica 1; característica 2/);
+  assert.match(c.handleCommand('/ajuda'), /\/adicionar produto-exemplo/);
   assert.equal(c.isProductImage('/assets/../secret'), false);
   assert.equal(c.isProductImage('https://user:pass@evil.test/a'), false);
+});
+
+test('tutorial mostra exemplos; imagem troca caminho sem renovar preço ou link', () => {
+  const f = fixture(), c = f.context;
+  assert.match(c.handleCommand('/ajuda'), /\/preco frigideira-24cm-antiaderente 56,90/);
+  assert.match(c.handleCommand('/ajuda imagens'), /não publica anexos/);
+  assert.match(c.handleCommand('/imagem frigideira \/assets\/nova-foto.png'), /imagem atualizada/);
+  assert.equal(f.product[10], '/assets/nova-foto.png');
+  assert.equal(f.product[12], '');
+  assert.equal(f.product[6], 'https://meli.la/1bwg6dp');
+  assert.equal(f.history.at(-1)[2], 'imagem');
+  assert.match(c.handleCommand('/imagem frigideira /assets/../secreto'), /^Erro:/);
+  assert.match(c.handleCommand('/imagem frigideira https://user:pass@evil.test/a'), /^Erro:/);
+  assert.equal(f.product[10], '/assets/nova-foto.png');
+});
+
+test('foto enviada pelo Telegram responde com tutorial sem baixar nem gravar imagem', () => {
+  const f = fixture();
+  const event = f.event('/ajuda');
+  const update = JSON.parse(event.postData.contents);
+  delete update.message.text;
+  update.message.photo = [{ file_id: 'foto-teste' }];
+  event.postData.contents = JSON.stringify(update);
+  assert.equal(f.context.doPost(event).html, 'OK');
+  assert.match(f.sent[0].text, /não publica anexos/);
+  assert.equal(f.product[10], '');
+});
+
+test('comandos rejeitam argumentos extras, preço excessivo e nomes inexistentes sem gravar', () => {
+  const f = fixture(), c = f.context;
+  for (const command of [
+    '/preco frigideira 52,00 extra',
+    '/link frigideira https://meli.la/AbC123 extra',
+    '/atualizar frigideira 52,00 https://meli.la/AbC123 extra',
+    '/ativar frigideira extra',
+    '/produtos 1 extra',
+    '/preco frigideira 1.000.000.000,01'
+  ]) assert.match(c.handleCommand(command), /^Erro:/);
+  assert.match(c.handleCommand('/comando-inexistente frigideira'), /Comando não reconhecido/);
+  assert.equal(f.product[3], 51);
+  assert.equal(f.product[6], 'https://meli.la/1bwg6dp');
+  assert.equal(f.product[9], true);
+  assert.equal(f.history.length, 0);
 });
 
 test('cabeçalhos ausentes falham antes de gravar; catálogo exige chave e esconde preços vencidos', () => {

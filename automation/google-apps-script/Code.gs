@@ -5,6 +5,7 @@ const HISTORY_SHEET = 'Historico';
 const RECEIPTS_SHEET = 'BotRecebimentos';
 const MAX_COMMAND_AGE_MS = 24 * 60 * 60 * 1000;
 const RECEIPT_RETENTION_MS = 48 * 60 * 60 * 1000;
+const MAX_PRICE = 1000000000;
 const REQUIRED_HEADERS = ['id', 'nome', 'descrição', 'preço', 'preço antigo', 'loja', 'link de afiliado', 'selo', 'características', 'ativo', 'imagem', 'texto alternativo', 'data_verificacao'];
 let commandVerifiedAt = null;
 
@@ -148,6 +149,7 @@ function handleCommand(text) {
     return 'BOOM Promo — guia rápido\n1. Veja os IDs: /produtos\n2. Mude o preço: /preco frigideira-24cm-antiaderente 56,90\n3. Mude só o link: /link ID https://meli.la/CODIGO\n4. Preço e link: /atualizar ID 51,00 https://meli.la/CODIGO\n5. Novo produto (troque os dados):\n/adicionar produto-exemplo | Nome | Descrição | 51,00 | https://meli.la/CODIGO\n6. Foto já publicada: /imagem ID /assets/foto.png\n7. Ocultar/mostrar: /desativar ID ou /ativar ID\nFotos: /ajuda imagens\nUse vírgula no preço; não escreva as palavras ID ou CODIGO. Valores devem ser conferidos manualmente.';
   }
   if (command === '/produtos') {
+    if (args.length) return 'Erro: use /produtos ou /produtos 2.';
     const products = getProducts();
     const page = /^\d+$/.test(productId || '1') ? Number(productId || 1) : 0;
     const pages = Math.max(1, Math.ceil(products.length / 30));
@@ -155,6 +157,9 @@ function handleCommand(text) {
     return products.length ? products.slice((page - 1) * 30, page * 30).map(product => `• ${product.id} — ${product.price || 'sem preço'}`).join('\n') + `\nPágina ${page}/${pages}. Use /produtos N para outra página.` : 'Nenhum produto ativo encontrado.';
   }
   if (command === '/adicionar') return addProductFromCommand(normalizedText);
+  if (!['/ativar', '/desativar', '/preco', '/link', '/imagem', '/atualizar'].includes(command)) {
+    return 'Comando não reconhecido. Use /ajuda.';
+  }
   if (!productId) return 'Informe o ID do produto. Use /produtos para ver a lista.';
 
   const sheet = getProductSheet();
@@ -163,12 +168,19 @@ function handleCommand(text) {
   if (!row) return `Não encontrei o produto: ${productId}`;
 
   if (command === '/ativar' || command === '/desativar') {
+    if (args.length) return `Erro: use ${command} ID.`;
     updateProduct(sheet, headers, row, { ativo: command === '/ativar' });
     appendHistory(productId, '', '', command.slice(1));
     return `${productId}: ${command === '/ativar' ? 'ativado' : 'desativado'}.`;
   }
-  if (command === '/preco') return updatePrice(sheet, headers, row, productId, args[0]);
-  if (command === '/link') return updateLink(sheet, headers, row, productId, args[0]);
+  if (command === '/preco') {
+    if (args.length !== 1) return 'Erro: use /preco ID 51,00.';
+    return updatePrice(sheet, headers, row, productId, args[0]);
+  }
+  if (command === '/link') {
+    if (args.length !== 1) return 'Erro: use /link ID https://meli.la/CODIGO.';
+    return updateLink(sheet, headers, row, productId, args[0]);
+  }
   if (command === '/imagem') {
     const image = args[0];
     if (!image || args.length !== 1 || !isProductImage(image)) return 'Erro: use /imagem ID /assets/foto.png ou uma URL https direta de imagem pública.';
@@ -177,15 +189,15 @@ function handleCommand(text) {
     return `${productId}: imagem atualizada. O preço não foi verificado novamente.`;
   }
   if (command === '/atualizar') {
+    if (args.length < 1 || args.length > 2) return 'Erro: use /atualizar ID 51,00 https://meli.la/CODIGO.';
     const [price, url] = args;
     const amount = parsePrice(price);
-    if (!Number.isFinite(amount) || amount <= 0) return 'Erro: informe um preço válido, por exemplo 51,00.';
+    if (!isValidPrice(amount)) return priceError();
     if (url && !isAffiliateUrl(url)) return 'Erro: use um link https://meli.la/... válido.';
     updateProduct(sheet, headers, row, url ? { preço: amount, 'link de afiliado': url } : { preço: amount }, true);
     appendHistory(productId, price, url || '', 'atualizar');
     return `${productId}: preço atualizado para ${formatPrice(amount)}${url ? ' e link atualizado' : ''}.`;
   }
-  return 'Comando não reconhecido. Use /ajuda.';
 }
 
 function addProductFromCommand(text) {
@@ -198,7 +210,7 @@ function addProductFromCommand(text) {
   if (name.length > 160 || description.length > 1200 || alt.length > 240 || badge.length > 80 || rawFeatures.length > 400) return 'Erro: texto muito longo. Reduza os campos do produto.';
   if (!isProductId(id)) return 'Erro: o ID deve usar letras minúsculas, números e hífens. Exemplo: garrafa-termica-1l.';
   const price = parsePrice(rawPrice);
-  if (!Number.isFinite(price) || price <= 0) return 'Erro: informe um preço válido, por exemplo 51,00.';
+  if (!isValidPrice(price)) return priceError();
   if (!isAffiliateUrl(url)) return 'Erro: use um link https://meli.la/... válido.';
   if (!isProductImage(image)) return 'Erro: a imagem deve estar vazia, começar com /assets/ ou usar uma URL https://.';
 
@@ -234,7 +246,7 @@ function addProductFromCommand(text) {
 
 function updatePrice(sheet, headers, row, productId, rawPrice) {
   const price = parsePrice(rawPrice);
-  if (!Number.isFinite(price) || price <= 0) return 'Erro: informe um preço válido, por exemplo 51,00.';
+  if (!isValidPrice(price)) return priceError();
   updateProduct(sheet, headers, row, { preço: price }, true);
   appendHistory(productId, rawPrice, '', 'preço');
   return `${productId}: preço atualizado para ${formatPrice(price)}.`;
@@ -249,7 +261,11 @@ function updateLink(sheet, headers, row, productId, url) {
 
 function updateProduct(sheet, headers, row, changes, priceVerified = false) {
   Object.entries(changes).forEach(([header, value]) => sheet.getRange(row, headers[header]).setValue(sheetLiteral(value)));
-  if (priceVerified) sheet.getRange(row, headers.data_verificacao).setValue(commandVerifiedAt || new Date()).setNumberFormat('dd/MM/yyyy HH:mm');
+  if (priceVerified) {
+    // Um valor riscado antigo não foi reconfirmado junto com o preço atual.
+    sheet.getRange(row, headers['preço antigo']).setValue('');
+    sheet.getRange(row, headers.data_verificacao).setValue(commandVerifiedAt || new Date()).setNumberFormat('dd/MM/yyyy HH:mm');
+  }
   invalidateCatalog();
 }
 
@@ -370,6 +386,14 @@ function parsePrice(value) {
   // Aceita o formato brasileiro e rejeita 51.00 para evitar gravar 5100 por engano.
   if (!/^(?:\d+|\d{1,3}(?:\.\d{3})+)(?:,\d{1,2})?$/.test(input)) return NaN;
   return Number(input.replace(/\./g, '').replace(',', '.'));
+}
+
+function isValidPrice(value) {
+  return Number.isFinite(value) && value > 0 && value <= MAX_PRICE;
+}
+
+function priceError() {
+  return 'Erro: informe um preço entre R$ 0,01 e R$ 1.000.000.000,00, usando vírgula. Exemplo: 51,00.';
 }
 
 function isAffiliateUrl(value) {

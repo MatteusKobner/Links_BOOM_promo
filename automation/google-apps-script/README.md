@@ -31,6 +31,8 @@ Uma instalação nova precisa das propriedades acima e dos cabeçalhos da aba `P
 
 Não escreva as palavras `ID` e `VALOR`: substitua pelos dados reais. Preços usam vírgula decimal (`51,00`). O cadastro aceita 5 a 9 campos, no máximo 1000 produtos. Características usam **ponto e vírgula** dentro do mesmo campo. Campos extras são rejeitados. Informe somente benefícios comprovados; deixe o selo vazio quando não houver um verificado.
 
+Os comandos rejeitam palavras ou parâmetros extras para evitar alterações acidentais. O preço aceito vai de R$ 0,01 a R$ 1.000.000.000,00. Toda atualização que verifica um preço limpa o campo `preço antigo`, pois o valor riscado não foi reconfirmado na mesma operação; link, imagem e visibilidade não renovam o TTL.
+
 Imagem opcional: arquivo já publicado em `/assets/` ou URL HTTPS direta e pública da imagem, sem credenciais. O bot ainda não envia fotos ao site; quando recebe uma foto pelo Telegram, responde com `/ajuda imagens`. Imagem vazia mostra “Foto em breve”. Links existentes não são alterados por esta atualização.
 
 Para gerenciar fotos sem editar a planilha: no GitHub do site, abra `assets` → **Add file** → **Upload files**, envie um PNG/JPG/WebP com nome simples (sem espaços) e confirme o commit. Espere o deploy de produção ficar pronto na Vercel. Para um card existente, envie `/imagem ID /assets/nome-do-arquivo.png` ao bot; para um novo, inclua o mesmo caminho no campo opcional de `/adicionar`. Evite links de compartilhamento do Drive, que não são URLs diretas de imagem. O bot muda o caminho no catálogo, mas não faz upload nem recorta a foto.
