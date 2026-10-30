@@ -80,3 +80,18 @@ test('sem chave, corpo gigante, HTML ou JSON inválido falham sem divulgar detal
   const badResponses = [() => new Response('HTML'), () => Response.json({ error: 'Unauthorized' }), () => Response.json(Array(1001).fill(product)), () => new Response('x'.repeat(1024 * 1024 + 1), { headers: { 'Content-Type': 'application/json' } })];
   for (const fetcher of badResponses) assert.equal((await handler(undefined, { fetcher })()).status, 503);
 });
+
+test('valores em textos não burlam TTL, preservando medidas, características e afiliado', async () => {
+  for (const amount of ['R$ 51,00', 'R$\u00a051', '51 reais', '1 real', '51,90 reais', 'BRL 51', '51 BRL', '51 R$', 'Ｒ＄ ５１,００', 'R\u200b$ 51,00']) {
+    for (const age of [0, 49 * 3600000]) {
+      const [p] = await (await handler([{ ...product, name: 'Produto por ' + amount,
+        description: 'Oferta por ' + amount, alt: 'Custa ' + amount, store: 'Loja ' + amount,
+        badge: 'Economize ' + amount, features: [amount, '130.000 RPM', '24 cm', 'Wi-Fi 6'],
+        data_verificacao: new Date(time - age).toISOString() }])()).json();
+      assert.equal(p.name, 'Produto'); assert.equal(p.description, ''); assert.equal(p.alt, '');
+      assert.equal(p.store, ''); assert.equal(p.badge, '');
+      assert.deepEqual(p.features, ['130.000 RPM', '24 cm', 'Wi-Fi 6']);
+      assert.equal(p.price, age ? '' : product.price); assert.equal(p.url, product.url);
+    }
+  }
+});

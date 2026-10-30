@@ -84,3 +84,24 @@ test('preferências reabrem sem duplicar painel e revogação encerra métricas'
   open();
   assert.equal(panels.length, 2);
 });
+
+test('card também omite preços embutidos em textos de uma resposta antiga e mantém o CTA exato', async () => {
+  const container = { innerHTML: '', querySelectorAll: () => [], setAttribute() {} };
+  const elements = { '#products': container, '#product-search': { value: '', addEventListener() {} }, '#product-count': {} };
+  const sandbox = {
+    URL, Intl, console, Date, setTimeout: () => 1, clearTimeout() {},
+    document: { querySelector: selector => elements[selector], addEventListener() {} },
+    window: { location: { origin: 'https://boompromo.com.br' } },
+    fetch: async () => ({ ok: true, json: async () => [{ id: 'produto', name: 'Produto por R$ 51,00',
+      description: 'Oferta por 51 reais', badge: 'Economize BRL 10', store: 'Loja R$ 51',
+      alt: 'Apenas 51 BRL', features: ['Frete R$ 9,90', '130.000 RPM', '24 cm'], image: '/assets/produto.webp',
+      price: 'R$ 51,00', originalPrice: 'R$ 60,00', url: 'https://meli.la/ExatoABC',
+      data_verificacao: new Date(Date.now() - 49 * 3600000).toISOString() }] })
+  };
+  runInNewContext(code, sandbox); await sandbox.loadProducts();
+  assert.doesNotMatch(container.innerHTML, /R\$|51 reais|51 BRL|BRL 10/);
+  assert.match(container.innerHTML, /130.000 RPM/); assert.match(container.innerHTML, /24 cm/);
+  assert.match(container.innerHTML, /O preço pode ter mudado/);
+  assert.match(container.innerHTML, /href="https:\/\/meli.la\/ExatoABC"/);
+  assert.match(container.innerHTML, /class="product-name">Produto</);
+});

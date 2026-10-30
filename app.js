@@ -36,7 +36,7 @@ async function loadProducts() {
     const data = await response.json();
     if (!Array.isArray(data)) throw new Error('Formato inválido de produtos');
     const products = data.filter(product => product && typeof product === 'object' &&
-      !Array.isArray(product) && typeof product.name === 'string' && product.name.trim() && product.active !== false).reverse();
+      !Array.isArray(product) && typeof product.name === 'string' && product.name.trim() && product.active !== false).map(publicProductPresentation).reverse();
     let cardObserver;
     let focusObserver;
     let expiryTimer;
@@ -131,6 +131,18 @@ async function loadProducts() {
   } finally {
     container.setAttribute('aria-busy', 'false');
   }
+}
+
+// Defesa também no navegador para respostas antigas em trânsito/cache.
+function publicProductPresentation(product) {
+  function safeText(value) {
+    if (typeof value !== 'string') return '';
+    const normalized = value.normalize('NFKC').replace(/[\u200B-\u200D\u2060\uFEFF]/g, '');
+    return /(?:R\s*\$|\bBRL\b)\s*\d|\d\s*(?:rea(?:l|is)\b|BRL\b|R\s*\$)/i.test(normalized) ? '' : value;
+  }
+  return { ...product, name: safeText(product.name) || 'Produto', description: safeText(product.description),
+    store: safeText(product.store), alt: safeText(product.alt), badge: safeText(product.badge),
+    features: Array.isArray(product.features) ? product.features.map(safeText).filter(Boolean) : [] };
 }
 
 function normalizeSearch(value) {
